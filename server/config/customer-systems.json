@@ -1,0 +1,6 @@
+{
+  "_comment": "Customer systems connector. OFF by default: the helpdesk then uses the CRM's own demo records. To connect the real systems, copy config/customer-systems.example.json over this file, change the addresses (they come from server/.env) and the field names to match the real APIs, set \"enabled\": true, and put the keys in server/.env. This file never contains a secret. See CUSTOMER_API.md.",
+  "enabled": false,
+  "sources": {},
+  "lookups": {}
+}

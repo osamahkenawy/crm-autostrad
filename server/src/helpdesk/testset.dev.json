@@ -1,0 +1,427 @@
+[
+ {
+  "expected": "unrecognized_charge",
+  "subject": "Unknown transaction on my card from Autostrad",
+  "body": "Dear Customer Service Team,\n\nI hope you are well. I returned my rental car (contract AST-104512) at Dubai Marina on 14 October and everything was settled at the counter. Yesterday I checked my banking app and found a second transaction from Autostrad for AED 612.50 on my Mastercard ending 7730, dated 22 October. I did not authorise anything after I returned the car and nobody mentioned extra charges to me.\n\nCould you please tell me what this amount is for and send me a breakdown? I have attached a screenshot of the transaction.\n\nKind regards,\nDaniel Whitfield\n+971 55 218 4417"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "المبلغ المحجوز على الكارت",
+  "body": "السلام عليكم\n\nأنا رجعت العربية من أسبوعين والمبلغ اللي اتحجز على الفيزا بتاعتي (2000 درهم) لسه ما نزلش. البنك بيقولي لازم الشركة هي اللي تفك الحجز. ممكن حد يفكه من عندكم لو سمحتوا؟ رقم العقد AST-120045.\n\nشكراً"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "receipt needed",
+  "body": "Hi pls send me the receipt for the car I rented last week from Al Quoz, need it for my company. Ahmed Zaki 055 666 1234. Thanks"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "Security deposit not returned yet",
+  "body": "Dear Sir/Madam,\n\nI rented a Mitsubishi Attrage from your Al Quoz branch (contract AST-110284) from 1 to 8 September 2026. I returned the car on time with a full tank and the agent confirmed there was no damage. As per the rental terms the AED 1,000 security deposit should come back within 14 working days. It has now been almost seven weeks and I have received nothing in my bank account.\n\nCould you please let me know when the deposit will be transferred, or if something is holding it up?\n\nRegards,\nAhmed Hassan"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "استلام السيارة من البيت",
+  "body": "السلام عليكم، إبي أحد يجي ياخذ السيارة من البيت في ياس أيلاند بكرة الصبح، ما أقدر أوصلها الفرع. ردوا علي بالوقت لو سمحتوا.\n\nSent from my iPhone"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "Traffic fine on contract AST-111902",
+  "body": "Dear Autostrad,\n\nI have received a notice for a traffic fine of AED 600 (speeding, Sheikh Zayed Road, 2 Oct, 14:35) plus an AED 50 admin fee on contract AST-111902. The car was not with me at that date and time: I returned it at your Dubai Marina branch at 10:00 that morning, as shown on the return receipt attached. Please check the handover time and remove the fine from my account.\n\nThank you,\nJames O'Connor"
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "تكلفة تنظيف السيارة",
+  "body": "مرحبا،\n\nجاني خصم 250 درهم على أساس تنظيف السيارة بعد ما رجعتها، بس والله رجعتها نظيفة وكمان غسلتها بنفسي بالمحطة. هالشي مو منطقي وما حدا حكالي شي وقت التسليم بفرع ديرة. بدي تراجعوا الموضوع وتلغوا هالمبلغ.\n\nمشكورين"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "overcharged at the counter",
+  "body": "hi i overpaid. online booking was AED 1,450 but at the airport counter i was charged AED 1,950 after the agent made a mistake with the insurance option, he put full cover two times. plz return the AED 500 to my mastercard. receipt attached"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "Extending my rental until 15 November",
+  "body": "Dear team,\n\nMy current rental (contract AST-116335, Hyundai Tucson, due back on 30 October at Dubai Marina) needs to be extended by about two weeks until 15 November as my work project has been delayed. Please let me know if the same daily rate applies and what I need to do to confirm the extension. I am happy to pay by card today.\n\nBest regards,\nTomasz Kowalski"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "كشف حساب للعقد",
+  "body": "مرحبا،\n\nبدي نسخة من كشف الحساب الخاص بعقد الإيجار مع كل الدفعات المسجلة عليه، لأنو المحاسب عندنا بدو ياه للتدقيق. بتقدروا تبعتوه على هاد الإيميل؟\n\nيعطيكم العافية"
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "Car broke down on Emirates Road",
+  "body": "Hi, my rental car (AST-120870, white Nissan Sunny) has stopped on Emirates Road near the Sharjah exit. The engine just died and a warning light is on. I am on the shoulder with my kids. Please send roadside assistance or a replacement car as soon as possible. My number is 050 482 7719."
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "ما حدا بيرد",
+  "body": "ما حدا عندكم بيرد عالتلفون ولا عالإيميل! صرلي يومين عم حاول وما في ولا جواب. هيك خدمة؟ حرام والله. ردوا علي بأسرع وقت"
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "Rude behaviour from your agent at Al Quoz branch",
+  "body": "Dear Sir/Madam,\n\nI want to report the behaviour of one of your employees, a gentleman named Mr. Faisal at the Al Quoz branch, on 24 October at around 5pm. When I politely asked why the deposit was AED 2,000 and not AED 1,000 as quoted, he raised his voice, rolled his eyes and said 'if you don't like it, go to another company' in front of other customers. I have been renting cars in Dubai for ten years and have never been spoken to like that.\n\nI expect an apology and appropriate action.\n\nSincerely,\nVikram Mehta\nContract: AST-117023"
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "wrong car",
+  "body": "i booked a Toyota Camry but got a Mazda 2, tiny and old, smells bad. why?"
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "OVERPRICED AND HIDDEN FEES",
+  "body": "I AM SICK OF YOUR HIDDEN FEES. EVERY TIME I RENT THERE IS SOMETHING NEW ON THE BILL. THIS TIME AED 75 'ADMIN' AND AED 60 'TYRE AND GLASS PROTECTION' THAT I NEVER ASKED FOR. YOUR PRICES ARE NOT WHAT YOU ADVERTISE."
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "Monthly rental rates and requirements",
+  "body": "Hello,\n\nI am relocating to Abu Dhabi next month and am looking for a car on monthly rental for about 3 months (a small sedan or compact SUV). Could you please tell me your monthly rates, the mileage limit, and what documents a new resident with an international licence needs to provide? Also, do you have a branch near Yas Island or only at the airport?\n\nThank you,\nGregory Hall"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "Get your car rental website to Page 1 of Google in 30 days",
+  "body": "Hello Autostrad Team,\n\nI was looking at your website and noticed it is not ranking on the first page for 'car rental Dubai'. We are a digital marketing agency and can get your website to Page 1 in 30 days. Special offer this week: SEO + Google Ads management for only $199/month.\n\nReply YES to get a free audit.\n\nBest,\nJake Morrison\nSenior SEO Consultant\n\nIf you do not wish to receive further emails, reply with UNSUBSCRIBE."
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "dent charge",
+  "body": "you charged me 1200 for a dent on the door but the dent was already there when i took the car nobody checked it at the counter in sharjah i have photos what can i do"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "إلغاء الحجز",
+  "body": "السلام عليكم ورحمة الله وبركاته،\n\nقمت بإلغاء حجزي رقم AST-121730 قبل موعد الاستلام بخمسة أيام، وكان المبلغ المدفوع 1,780 درهم. لم يتم إرجاع أي مبلغ إلى بطاقتي حتى الآن. أرجو التكرم برد المبلغ المدفوع كاملاً وفق سياسة الإلغاء المجاني.\n\nمع الشكر"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "return date change",
+  "body": "Hi, I need to bring the car back 2 days earlier, on Thursday 29th instead of Saturday 31st. Please update it and tell me if the price changes. Thanks"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "Signed rental agreement for insurance",
+  "body": "Hello,\n\nCould you please email me a signed copy of the rental agreement for contract AST-108124 (28 Aug to 4 Sep 2026)? I did not receive one at the counter and I need it for my insurance claim. A PDF is fine.\n\nThanks,\nBen Alvarez"
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "flat tyre need help",
+  "body": "Flat tyre on the Tucson, I am at Yas Island car park P3 and there is no spare in the boot. Can someone come or swap the car? I will probably need an extra day on the rental because of this, but first I need help with the car.\n\nSent from my iPhone"
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "No response to my emails for two weeks",
+  "body": "Dear Management,\n\nI have written to this address on 13, 16 and 20 October about my rental (AST-115840) and have not received a single reply. I also called the Deira branch four times and each time I was told someone would call me back. Nobody did. I have rented from you six times, and this level of service is not acceptable.\n\nI would appreciate a response from a manager.\n\nRegards,\nSimon Clarke"
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "behaviour of your employee",
+  "body": "Hi, I want to complain about the guy at the Sharjah Al Nahda counter. أسلوبه كان سيئ وايد وكان يصارخ علي قدام الناس. The name tag looked like Rashed but I am not sure. Date: yesterday around noon. ما يصير كذا مع العملاء. Please follow up."
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "Fwd: تأكيد الحجز",
+  "body": "مرحبا،\n\nأنا حاجز سيارة SUV (كيا سبورتاج) بس لما وصلت على فرع ديرة ما لقيت غير سيدان صغيرة ما بتتسع للعيلة، والموظف قال ما في غيرها. هيدا مش يلي دفعت حقه. رقم العقد AST-120112. بدي تفسير.\n\n---------- Forwarded message ---------\nFrom: Autostrad Reservations\nSubject: تأكيد الحجز\n\nتم تأكيد حجزكم: كيا سبورتاج (SUV)، الاستلام من فرع ديرة بتاريخ 24 أكتوبر 2026."
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "Invoice does not match the price I was quoted",
+  "body": "Dear Autostrad,\n\nI am writing about the invoice for contract AST-112889. At booking, the Toyota Corolla was quoted at AED 99 per day for 10 days. The final invoice shows AED 1,260 including VAT, which includes a 'service fee' of AED 120 and an 'airport surcharge' of AED 90 that were never mentioned to me, neither on the website nor at the counter. I feel the pricing was not transparent.\n\nBest regards,\nNadia Haddad"
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "استفسار عن العربيات المتاحة",
+  "body": "السلام عليكم\n\nعايز أعرف لو عندكم عربيات متاحة يوم 5 نوفمبر لمدة أسبوع من فرع دبي، وإيه المستندات المطلوبة لو معايا رخصة مصرية بس. وهل لازم فيزا ولا ينفع كاش؟\n\nشكراً"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "Undeliverable: Your rental invoice (AST-116901)",
+  "body": "Delivery has failed to these recipients or groups:\n\na.kamal@yahoo.com\nYour message wasn't delivered because the address couldn't be found, or is unable to receive mail.\n\nDiagnostic information for administrators:\nGenerating server: mail-relay.example\na.kamal@yahoo.com\nRemote Server returned '550 5.1.1 RESOLVER.ADR.RecipNotFound; not found'\n\nOriginal message headers:\nFrom: helpdesk@autostrad.com\nSubject: Your rental invoice (AST-116901)"
+ },
+ {
+  "expected": "unrecognized_charge",
+  "subject": "Re: Your rental receipt",
+  "body": "Hi,\n\nThanks for the receipt. The rental amount matches but I also see a separate AED 275 debit on my card ending 5512 from Autostrad on 19 Oct that is not on this receipt. The AED 2,000 hold I understand, that is the deposit, but what is the 275 for? Nobody explained it at pickup and I never agreed to it.\n\nBest,\nMarta\n\nOn Mon, 19 Oct 2026 at 16:42, Autostrad Customer Care <helpdesk@autostrad.com> wrote:\n> Dear Marta,\n> Please find attached your receipt for your recent rental.\n> Kind regards,\n> Autostrad Customer Care"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "hold not removed",
+  "body": "hi i returnd the car in deira on the 1st and the amount block on my card is still there 2000 aed my bank said its not them its the car company pls remove it i need the money thanks"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "VAT invoice for contract AST-107733",
+  "body": "Dear Autostrad Accounts Team,\n\nPlease issue a VAT tax invoice for the rental under contract AST-107733 (7 days, 18 to 25 September 2026) in the name of our company, Gulfline Logistics LLC, TRN 100347829100003. The invoice should be addressed to our Finance department as we need it to process the reimbursement before month end.\n\nThank you in advance.\n\nBest regards,\nRashid Al Mansoori\nOperations Manager, Gulfline Logistics LLC\nDubai Investments Park\n\nCONFIDENTIALITY NOTICE: This e-mail and any attachments are intended solely for the addressee and may contain confidential or legally privileged information. If you are not the intended recipient, please notify the sender immediately and delete this message."
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "deposit??",
+  "body": "any update on my deposit? returned the car 2 weeks ago, still nothing in my account. AST-118772"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "Collection on Sunday",
+  "body": "Dear team,\n\nMy rental ends on Sunday 1 Nov. I am travelling that morning so please arrange to collect the Kia Sportage from Sharjah Al Nahda, building 4, basement parking, any time before 7am. I will leave the key in a sealed envelope at the reception. Once it is collected, please process my deposit as usual.\n\nThanks,\nFatima\n\nSent from my iPhone"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "سالك ورسوم إدارية",
+  "body": "السلام عليكم\n\nليه حاسبتوني 96 درهم سالك وأنا معديتش من البوابات غير 8 مرات بس؟ ده معناه 32 درهم مش 96! وكمان فيه رسوم إدارية على كل مرة. الحساب مش مظبوط. ممكن حد يراجع الموضوع؟"
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "YOUR STAFF IS RUDE",
+  "body": "THE LADY AT YOUR YAS ISLAND DESK WAS EXTREMELY RUDE TO MY WIFE AND SHOUTED AT HER IN FRONT OF OUR CHILDREN. SHE REFUSED TO GIVE HER NAME. I WANT HER MANAGER TO CALL ME TODAY. THIS IS UNACCEPTABLE BEHAVIOUR. AST-119870"
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "Car was dirty and had a cracked windscreen at pickup",
+  "body": "Dear Autostrad,\n\nI picked up a Nissan Patrol from Dubai Marina on 23 October (contract AST-121880). The interior was dirty (crumbs on the seats and a sticky dashboard), there was a long crack across the windscreen, and the car smelled strongly of smoke. I took pictures, attached. I paid for a premium SUV and expected a clean and safe car. Please note this complaint so that I am not held responsible for any of it at return, and let me know what you intend to do about it.\n\nThanks,\nJoanna Reeves"
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "hidden charges",
+  "body": "Hello, the invoice for contract AST-118520 is wrong. السعر اللي حكولي ياه 120 باليوم وطلع بالفاتورة 165 plus fees وما حدا حكالي عنها. This is not fair, please check. شكراً"
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "price?",
+  "body": "hi how much for a Nissan Sunny for 3 days from Ajman? do u need a deposit"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "رد تلقائي: خارج المكتب",
+  "body": "شكراً لرسالتكم. أنا خارج المكتب حالياً في إجازة سنوية وسأعود يوم الأحد 1 نوفمبر 2026. للأمور العاجلة يرجى التواصل مع الزميل أحمد على البريد الإلكتروني الخاص بالقسم.\n\nهذا رد تلقائي، الرجاء عدم الرد على هذه الرسالة.\n\nAutomatic reply: I am out of the office until 1 November 2026."
+ },
+ {
+  "expected": "unrecognized_charge",
+  "subject": "khasm min el bitaqa",
+  "body": "salam alaykom, shift khasm 295 dirham min el bitaqa (akhir 4 arqam 9021) w ma a3rf shu hatha el khasm. ana ma wagga3t 3ala shay zayed. yemkin tshar7on li?? shukran"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "Card hold still showing after return",
+  "body": "Good afternoon,\n\nI returned the Toyota Corolla at Abu Dhabi Airport on 9 October (contract AST-113021). The agent confirmed everything was fine, but the AED 1,500 hold from your company is still showing as pending on my Visa ending 3318, 17 days later. My bank says the hold was placed by the merchant and only the merchant can release it.\n\nCould you please release it or tell me when it will drop off my card? I am travelling next week and need the available balance.\n\nThank you,\nOmar Siddiqui\n\nSent from my iPhone"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "الفاتورة الضريبية للإيجار",
+  "body": "مرحبا،\n\nبدي فاتورة ضريبية عن إيجار السيارة يلي استأجرتها من فرعكن بدبي مارينا من 5 لـ 12 تشرين الأول. بحتاجها للشغل لأنو الشركة بدها ياها لتعوّضني المصاريف. المبلغ كان 1,260 درهم. فيكن تبعتوها عالإيميل؟\n\nشكراً إلكن"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "Re: Final settlement",
+  "body": "Hi Sara,\n\nThanks for the breakdown. I accept the Salik charges (AED 38) and the fuel top-up of AED 45. That leaves AED 917 of my AED 1,000 deposit, so please confirm when that balance will land in my bank account. The IBAN I gave at the counter is the correct one.\n\nRegards,\nMichael Brandt\n\n> From: Sara, Autostrad Customer Care\n> Sent: Tuesday, 20 October 2026 11:12\n> Subject: Final settlement\n> Your final statement is attached: deposit AED 1,000, Salik AED 38, fuel AED 45. The balance will be processed to you."
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "finish rental today + pickup",
+  "body": "Hi, I want to finish the rental early, contract AST-121004. ممكن تيجوا تاخدوا العربية من Abu Dhabi Airport Terminal 1 departures النهاردة الساعة 6 مساءً؟ عندي flight الساعة 9 بالليل. شكراً"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "ADMIN FEE ON A FINE",
+  "body": "YOU CHARGED ME AED 100 ADMIN FEE ON A AED 200 FINE!!! THAT IS HALF OF THE FINE. THE FINE IS ALSO NOT MINE, I WAS NOT IN ABU DHABI THAT DAY. REMOVE IT OR I WILL REPORT YOU TO CONSUMER PROTECTION."
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "Scratch charge I disagree with",
+  "body": "Dear Customer Care,\n\nI have been billed AED 850 for a scratch on the rear bumper of the Toyota Yaris (contract AST-117905). When I picked up the car at Yas Island on 5 October I photographed the bumper, and the same scratch is clearly visible in my pictures. Please see the three photos attached, taken at 09:12 before I left the car park. I would like the charge reversed.\n\nKind regards,\nLaura Fischer"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "Paid twice for the same booking",
+  "body": "Hello,\n\nI was charged twice for the same booking on 12 October: AED 1,340 at 15:02 and again AED 1,340 at 15:04, both on my card ending 4096. The reservation number is AST-118094 and I only made one booking. Please refund the second payment to my card.\n\nThank you,\nHamza Yousuf\n\nGet Outlook for iOS"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "تمديد الإيجار",
+  "body": "السلام عليكم، إبي أمدد الإيجار 5 أيام زيادة لين يوم 3 نوفمبر، السيارة عندي من الأسبوع الماضي، العقد AST-110991. وايد مشغول ومب قادر أجي الفرع. شو أسوي؟"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "صورة من العقد ونموذج الاستلام",
+  "body": "السلام عليكم ورحمة الله،\n\nأرجو التكرم بإرسال نسخة إلكترونية من عقد الإيجار رقم AST-113457 مع نموذج استلام وتسليم المركبة الموقّع، وذلك لحاجتي إليهما لدى شركة التأمين. مرفق صورة من الهوية الإماراتية للتحقق.\n\nشكراً لكم."
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "CHECK ENGINE LIGHT AND CAR SHAKING",
+  "body": "THE CHECK ENGINE LIGHT CAME ON THIS MORNING AND THE CAR IS SHAKING AT 80 KM/H. I AM NOT DRIVING THIS ANYMORE. SEND ME A REPLACEMENT CAR TODAY TO DEIRA. I HAVE A MEETING AT 3PM."
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "شكوى بخصوص التأخير",
+  "body": "السادة الكرام،\n\nأود تسجيل شكوى بخصوص التأخر الكبير في تسليم السيارة المحجوزة في فرع دبي مارينا (العقد AST-109512)، حيث انتظرت أكثر من ساعتين ونصف بعد الموعد المحدد دون أي اعتذار أو توضيح. كما لم يتم الرد على اتصالاتي المتكررة بخدمة العملاء. آمل أن تأخذوا هذه الملاحظات بعين الاعتبار لتحسين مستوى الخدمة.\n\nمع التقدير"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "موعد إعادة مبلغ الضمان",
+  "body": "السادة شركة أوتوستراد المحترمين،\n\nتحية طيبة وبعد،\n\nأود الاستفسار عن موعد إعادة مبلغ الضمان (2,000 درهم) الذي دفعته عند استلام السيارة بموجب العقد رقم AST-108851، علماً بأنني سلّمت المركبة بتاريخ 20 سبتمبر 2026 في مطار أبوظبي ولم يصلني المبلغ حتى تاريخه رغم مرور أكثر من شهر.\n\nأرجو إفادتي بالموعد المتوقع للتحويل.\n\nوتفضلوا بقبول فائق الاحترام،\nخالد بن سعيد الكعبي"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "car pickup",
+  "body": "hello i dont need the car anymore can you send a driver to pick it up from my office in al quoz tomorrow after 4pm the key is with the security guy thank u\n\nSent from Yahoo Mail on Android"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "مخالفة غير صحيحة",
+  "body": "تحية طيبة،\n\nتم إبلاغي بمخالفة مرورية بقيمة 400 درهم بتاريخ 11/10/2026 في إمارة الشارقة، إضافة إلى رسوم إدارية قدرها 50 درهماً (العقد رقم AST-116020). أود التنبيه إلى أن السيارة لم تكن بحوزتي في ذلك الوقت لأنني أعدتها صباح اليوم نفسه، وأطلب مراجعة الأمر وإلغاء المخالفة.\n\nشاكراً تعاونكم."
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "Re: Damage assessment",
+  "body": "Hello,\n\nI do not accept the AED 1,900 damage assessment. Your inspector at Abu Dhabi Airport signed the return form with 'no new damage' on 22 Oct. If you believe the car was damaged, please send me the inspection report with photos, and until then please do not deduct anything from my card.\n\nRegards,\nSultan\n\n> On 25 Oct 2026, Autostrad Claims <claims@autostrad.com> wrote:\n> Dear Mr. Sultan, following inspection of the vehicle a front bumper repair of AED 1,900 will be charged to your card.\n> Claims Department"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "Fwd: Booking cancelled",
+  "body": "Hi team,\n\nI cancelled my booking last Tuesday (confirmation below) بس الفلوس ما رجعت لحد الآن. AED 950 on my card ending 2210. Can you please refund me? يعطيكم العافية\n\n---------- Forwarded message ---------\nFrom: Autostrad Reservations\nSubject: Booking cancelled\n\nYour booking for a Nissan Sunny from Ajman on 3 Nov has been cancelled as requested. Any amount paid will be refunded according to the cancellation policy."
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "extend",
+  "body": "ezzayak, ana 3ayez amadd el egar 3 ayyam tanyeen, el 3arabiya ma3aya lghayet yom 29. momken ta3melo el ta3deel dah men 3andokom wala lazem agi el far3? shukran"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "Fwd: Insurance claim documents needed",
+  "body": "Hi Autostrad,\n\nAs discussed with your colleague on the phone, can you email me the accident report and the signed rental agreement? The accident was on 4 Oct near Al Quoz, the car was swapped the same day and everything was handled well, thanks. My insurer just needs the paperwork.\n\nRegards,\nPeter Lang\n\n---------- Forwarded message ---------\nFrom: Claims Department\nTo: Peter Lang\n\nPlease provide the rental company's accident report and signed agreement so we can proceed with your claim.\n\nDISCLAIMER: This message is intended only for the named recipient and may contain privileged information. If you received it in error, please delete it."
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "العربية الكاوتش اتخرم",
+  "body": "السلام عليكم، الكاوتش الأمامي في عربية الإيجار اتخرم وأنا واقف على طريق الشارقة من ساعة، رقم العقد AST-117456. ممكن تبعتوا حد يغيره أو تبدلولي العربية بواحدة تانية؟ ضروري."
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "Re: Replacement vehicle",
+  "body": "Hello,\n\nThank you, the replacement Corolla arrived eventually and the car is fine now. But I need to formally complain about how this was handled: the breakdown happened at 11am, your roadside team only arrived at 4:30pm and your call centre transferred me three times. Nobody apologised. I would like this feedback to go to your operations manager.\n\nRegards,\nDavid Mensah\n\nThis e-mail is confidential and may be legally privileged. If you have received it in error, please delete it and notify the sender."
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "agent at Deira",
+  "body": "The agent at Deira today (tall guy with glasses) was very rude when I asked about the Salik charge. He told me to read the contract, didn't even look at me and then walked away to serve someone else. Please talk to him. Not the first time I hear this about your Deira branch."
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "السيارة وايد وسخة",
+  "body": "السلام عليكم، السيارة اللي استلمتها اليوم من مطار أبوظبي وسخة من الداخل وفيها ريحة سجاير وكراسيها فيها بقع. ما توقعت هالمستوى منكم. لازم تعتذرون وتعوضوني."
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "Re: Your invoice",
+  "body": "hi i just checked the invoice you sent and the total is wrong the delivery fee is charged two times 150 + 150 but i agreed 150 only plz correct it and send me the right invoice\n\n> From: Autostrad Accounts\n> Dear Customer, kindly find attached the invoice for your rental.\n> Regards"
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "Can I take the car to Oman?",
+  "body": "Hi, I have a current rental with you (AST-121266, Toyota Camry, until 6 Nov). Is it allowed to drive the car to Muscat? If yes, what extra insurance or paperwork is required and is there a fee? I am planning to go this weekend, so a quick answer would be appreciated.\n\nThanks,\nSaeed\n\nSent from my iPhone"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "Automatic reply: Rental agreement AST-109778 attached",
+  "body": "Thank you for your email. I am currently out of the office with limited access to email and will return on Monday 2 November 2026. For urgent matters please contact my colleague Hassan on +971 4 555 0192.\n\nKind regards,\nAmal Fernandes\nAdministration, Horizon Interiors"
+ },
+ {
+  "expected": "unrecognized_charge",
+  "subject": "خصم من البطاقة ما أعرفه",
+  "body": "السلام عليكم\n\nشفت خصم 380 درهم من بطاقتي (آخر أربع أرقام 8841) باسم أوتوستراد وأنا ما عرفت شو هذا الخصم. ما وقعت على شي زيادة. رقم العقد AST-109876. ياليت توضحون لي سببه.\n\nشكراً"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "Re: Rental closed",
+  "body": "Hello,\n\nIt has been 3 weeks and the pending authorisation of AED 2,500 on my debit card ending 6604 has still not dropped off. You said 14 days. Can someone please check with your finance team and confirm the hold has been released on your side?\n\nRegards,\nImran Qureshi\n\n> On Thu, 1 Oct 2026, Autostrad Customer Care wrote:\n> Dear Mr. Qureshi, your rental has been closed. The card pre-authorisation will be released within 14 days.\n> Kind regards"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "Fwd: Car rental receipt needed for expense claim",
+  "body": "Hi Autostrad team,\n\nForwarding the request from our finance team. I rented a Nissan Sunny from your Sharjah Al Nahda branch from 20 to 24 October. I only got the card payment slip, and they want a proper tax invoice showing the rental period and the plate number. My contract number is AST-122910.\n\nThanks,\nPriya Nair\n\n---------- Forwarded message ---------\nFrom: Finance Department\nDate: Mon, 26 Oct 2026\nSubject: Car rental receipt needed for expense claim\n\nPriya, the card slip is not accepted. Please get a tax invoice from the rental company with their TRN, dates and plate number, otherwise we cannot reimburse you."
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "my contract",
+  "body": "Can u send me my contract and the pickup condition report? Rented from JLT last month. Name Rizwan Ahmed, phone 052 667 1930\n\nSent from my iPhone"
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "حادث",
+  "body": "السلام عليكم، صار لي حادث بسيط الحين في شارع الشيخ زايد، واحد ضرب السيارة من ورا والشرطة موجودة. شو أسوي بالسيارة وكيف أتواصل معاكم؟\n\nSent from my iPhone"
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "worst service ever",
+  "body": "i waited 3 hours at abu dhabi airport counter for the car i booked and nobody even said sorry this is the worst service i had in dubai ever and when i call your number it just keeps ringing\n\nSent from my iPhone"
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "Re: How was your rental experience?",
+  "body": "Since you ask: the driver who delivered the car to my home in JLT was on his phone the whole time, did not explain anything about the car, and when I asked a question he said 'it's all in the contract' and walked off. Very unprofessional. Thought you should know.\n\nAisha R.\n\n> Hi Aisha, thank you for renting with Autostrad. How was your experience? Reply to this email and tell us.\n> Customer Care Team"
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "CAR IN TERRIBLE CONDITION",
+  "body": "THE CAR YOU GAVE ME HAS DENTS ALL OVER, ONE TYRE LOOKS BALD AND THE SEAT IS TORN. THIS IS NOT AN 'EXCELLENT CONDITION' CAR AS ON YOUR WEBSITE. I RENTED FROM SHARJAH AL NAHDA ON SUNDAY. I HAVE PICTURES. WHAT ARE YOU GOING TO DO ABOUT IT?"
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "Weekly rate not applied on our invoices",
+  "body": "Good morning,\n\nWe rented two vehicles for 7 days each for our visiting delegation. Your sales team confirmed the weekly rate of AED 520 per car, however both invoices show the daily rate of AED 95 for each of the seven days, which is AED 145 more per car. We believe the invoices are incorrect and would like them reviewed and reissued.\n\nRegards,\nMaha Al Suwaidi\nAdmin Officer, Falcon Engineering\n\nDisclaimer: This communication is intended solely for the use of the individual or entity to whom it is addressed and may contain confidential information. Any unauthorised use or disclosure is prohibited."
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "Corporate rental accounts",
+  "body": "Dear Sales Team,\n\nWe are a small travel agency in Deira and we frequently need cars for our clients. Do you offer corporate accounts or discounted rates for monthly volume? Who should I speak to? Also, what is your cancellation policy for corporate bookings?\n\nBest regards,\nIbrahim Younis\nSky Route Travel & Tourism\n\nThis email and any files transmitted with it are confidential and intended solely for the use of the individual or entity to whom they are addressed."
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "Gulf Fleet & Mobility Expo 2026: early bird tickets end Friday",
+  "body": "View this email in your browser\n\nGULF FLEET & MOBILITY EXPO 2026\nDubai World Trade Centre | 24-26 November\n\nMeet 300+ exhibitors, attend the Fleet Leaders Summit and explore the latest in telematics, EV charging and rental technology. Early bird registration ends this Friday, save 40%.\n\n[REGISTER NOW]\n\nYou are receiving this email because you subscribed to Expo updates. Unsubscribe | Manage preferences | Privacy policy"
+ },
+ {
+  "expected": "unrecognized_charge",
+  "subject": "WHAT IS THIS CHARGE???",
+  "body": "WHO AUTHORISED AED 1,450 ON MY CARD?? I NEVER SIGNED ANYTHING FOR THIS. THE CAR WAS RETURNED CLEAN AT YAS ISLAND ON 3 OCT AND THE AGENT SAID EVERYTHING WAS FINE. EXPLAIN THIS DEDUCTION IMMEDIATELY OR I WILL CALL MY BANK AND DISPUTE IT."
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "block on my credit card",
+  "body": "Hi team, the block of AED 3,000 on my credit card للحين موجود after 14 days of returning the car at JLT. البنك يقول انتو اللي لازم تفكون الحجز. Please release it asap, مشكورين"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "el invoice",
+  "body": "salam, ma wasalni el invoice taba3 el 3aqd w el sharika 3am tetlob menni. momken tb3atou 3a hal email? akhdet el sayyara min fare3 Dubai Marina el usbou3 el madi. shukran ktir"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "مبلغ التأمين",
+  "body": "السلام عليكم ورحمة الله\n\nمن متى وأنا أنتظر ترجعون لي مبلغ التأمين 1500 درهم، رجعت السيارة قبل 3 أسابيع في الشارقة النهدة وإلى الحين ما وصلني شي. متى بترجعونه؟"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "Please collect the car from my building",
+  "body": "Hello,\n\nI have to leave Dubai urgently tonight because of a family emergency and I will not be able to bring the Nissan Altima (contract AST-119611) back to Dubai Marina. Could you please send someone to collect it from my apartment building in Cluster D, JLT? The car will be in visitor parking and the key will be at the reception desk. I would like to end the rental from today, 27 October.\n\nPlease confirm the pickup time.\n\nThanks and regards,\nElena Petrova"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "Fwd: Salik and fines statement",
+  "body": "Hi,\n\nI don't understand these Salik charges. I only drove through the toll gates 4 times that week, not 8. I attached my own Salik trip history. Please check and correct.\n\nSent from my Galaxy\n\n---------- Forwarded message ---------\nFrom: Autostrad Accounts\nDate: Mon, 26 Oct 2026\nSubject: Salik and fines statement\n\nDear customer, the following were charged to your card ending 1187: Salik tolls x8 = AED 32, admin fee AED 40. Total AED 72."
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "رسوم البنزين",
+  "body": "السلام عليكم، حاسبتوني 180 درهم بنزين وأنا رجعت السيارة والتانكي مليان، وعندي صورة للعداد وقت التسليم. العقد رقم AST-112734. ليش هالمبلغ؟ إبي تراجعون الموضوع. شكراً"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "Still no refund after cancelling, this is my 4th email",
+  "body": "This is my 4th email. I cancelled my booking on 16 October because my visa was refused, and your agent Layla confirmed by phone that AED 1,120 would go back to my card within 7 days. It is now 27 October. I am very disappointed with how this has been handled, but all I want now is my money back. Please process the refund today.\n\nAnil Kumar"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "Re: Your booking confirmation",
+  "body": "Hi,\n\nCan you please change the drop-off for my rental from Dubai Marina to Abu Dhabi Airport? I would also like to add my wife Nadia as a second driver, her licence copy is attached. The pickup date stays the same (2 Nov). Please tell me if there are any extra charges.\n\nThanks,\nKarim\n\n> Your booking is confirmed. Pickup: Dubai Marina, 2 Nov 2026 10:00. Return: Dubai Marina, 9 Nov 2026 10:00.\n> Autostrad Reservations"
+ }
+]

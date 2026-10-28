@@ -1,0 +1,33 @@
+# systemd unit for the Autostrad CRM and helpdesk API (it also runs the background jobs: mailbox reading, reminders, reports).
+# Install:   sudo cp deploy/autostrad-crm.service /etc/systemd/system/
+#            sudo systemctl daemon-reload && sudo systemctl enable --now autostrad-crm
+# Look at it: systemctl status autostrad-crm      journalctl -u autostrad-crm -f
+#
+# Assumes: the code is in /srv/autostrad-crm, the user "autostrad" owns it, Node 22 is /usr/bin/node (NodeSource package).
+# Settings and secrets are NOT here: they are in /srv/autostrad-crm/server/.env (mode 600), which the app reads itself.
+# Run exactly ONE copy of this service: the scheduler lives inside it and the database is a single file.
+[Unit]
+Description=Autostrad CRM and customer-service helpdesk
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=autostrad
+Group=autostrad
+WorkingDirectory=/srv/autostrad-crm/server
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node src/index.js
+Restart=always
+RestartSec=5
+SyslogIdentifier=autostrad-crm
+
+# hardening (safe defaults; the app only needs to write inside its own folder)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/srv/autostrad-crm
+
+[Install]
+WantedBy=multi-user.target

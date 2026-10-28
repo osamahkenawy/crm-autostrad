@@ -1,0 +1,27 @@
+{
+  "name": "autostrad-crm-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/seed.js",
+    "test": "node --test \"test/**/*.test.js\"",
+    "mock:customer-api": "node scripts/mock-customer-api.mjs",
+    "dev:live": "HELPDESK_ACCOUNT_SOURCE=api CUSTOMER_SYSTEMS_CONFIG=config/customer-systems.example.json ORION_BASE_URL=http://127.0.0.1:4010/v1 CNR_BASE_URL=http://127.0.0.1:4010/v1 ORION_API_KEY=dev-mock-key CNR_API_KEY=dev-mock-key node --watch src/index.js",
+    "backup": "node scripts/backup-db.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.10.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": ">=20.12"
+  }
+}

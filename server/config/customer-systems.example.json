@@ -1,0 +1,146 @@
+{
+  "_comment": [
+    "A working example: it maps the stand-in API in scripts/mock-customer-api.mjs, so you can see every screen with live data before the real APIs exist.",
+    "Copy this file to customer-systems.json (or point CUSTOMER_SYSTEMS_CONFIG at it) and change two things: the addresses and the field names.",
+    "No secret is ever written here: 'key_env' and 'base_url_env' only NAME the lines of server/.env that hold them.",
+    "Each lookup is one question to one system. {email}, {contract_no} and {customer_id} are filled in from the email; {contract_no|digits} keeps only the digits, and {name?} marks a value that may be missing.",
+    "'result' says where the record(s) are in the answer; 'map' says which field of a record is which fact. A field can be a path (\"vehicle.plateNumber\"), a list of paths to try in turn, or an object with options: type, map, scale, template, default.",
+    "Lookups you leave out are simply skipped. 'contract' or 'customer_by_email' is enough to start with."
+  ],
+  "enabled": true,
+  "fallback_to_crm": false,
+  "freshness_minutes": 10,
+  "utc_offset_hours": 4,
+  "sources": {
+    "orion": {
+      "label": "Orion Fleet",
+      "base_url_env": "ORION_BASE_URL",
+      "auth": { "type": "api_key", "header": "X-Api-Key", "key_env": "ORION_API_KEY" },
+      "timeout_ms": 6000,
+      "allow_http": true
+    },
+    "cnr": {
+      "label": "CNR Portal",
+      "base_url_env": "CNR_BASE_URL",
+      "auth": { "type": "api_key", "header": "X-Api-Key", "key_env": "CNR_API_KEY" },
+      "timeout_ms": 6000,
+      "allow_http": true
+    }
+  },
+  "lookups": {
+    "customer_by_email": {
+      "source": "orion",
+      "path": "/customers",
+      "query": { "email": "{email}" },
+      "result": "data",
+      "map": {
+        "id": "id",
+        "name": ["fullName", "companyName"],
+        "email": "emailAddress",
+        "emails": { "path": "otherEmails", "type": "list" },
+        "phone": "mobile",
+        "tier": "loyalty",
+        "segment": "accountType",
+        "status": "state"
+      }
+    },
+    "customer_by_id": {
+      "source": "orion",
+      "path": "/customers/{customer_id}",
+      "result": "data",
+      "map": {
+        "id": "id",
+        "name": ["fullName", "companyName"],
+        "email": "emailAddress",
+        "emails": { "path": "otherEmails", "type": "list" },
+        "phone": "mobile",
+        "tier": "loyalty",
+        "segment": "accountType",
+        "status": "state"
+      }
+    },
+    "contract": {
+      "source": "orion",
+      "path": "/contracts/{contract_no}",
+      "result": "data",
+      "map": {
+        "contract_no": "contractNumber",
+        "status": { "path": "state", "map": { "ON_RENT": "active", "RETURNED": "completed", "BOOKED": "upcoming", "CANCELLED": "cancelled" } },
+        "product_line": "product",
+        "start_at": { "path": "pickup.at", "type": "datetime" },
+        "end_at": { "path": "return.at", "type": "datetime" },
+        "total_amount": { "path": "grandTotal", "type": "money" },
+        "payment_status": "paymentState",
+        "customer_id": "customerId",
+        "customer_email": { "path": "customerEmail", "type": "email" },
+        "vehicle_name": { "template": "{vehicle.make} {vehicle.model}" },
+        "vehicle_plate": "vehicle.plateNumber",
+        "branch_name": "pickup.branch.name",
+        "branch_emirate": "pickup.branch.emirate",
+        "url": "links.portal"
+      }
+    },
+    "contracts_by_customer": {
+      "source": "orion",
+      "path": "/customers/{customer_id}/contracts",
+      "query": { "limit": "10" },
+      "result": "data",
+      "map": {
+        "contract_no": "contractNumber",
+        "status": { "path": "state", "map": { "ON_RENT": "active", "RETURNED": "completed", "BOOKED": "upcoming", "CANCELLED": "cancelled" } },
+        "product_line": "product",
+        "start_at": { "path": "pickup.at", "type": "datetime" },
+        "end_at": { "path": "return.at", "type": "datetime" },
+        "total_amount": { "path": "grandTotal", "type": "money" },
+        "customer_id": "customerId",
+        "vehicle_name": { "template": "{vehicle.make} {vehicle.model}" },
+        "vehicle_plate": "vehicle.plateNumber"
+      }
+    },
+    "invoices": {
+      "source": "cnr",
+      "path": "/invoices",
+      "query": { "contractNumber": "{contract_no}" },
+      "result": "data",
+      "map": {
+        "number": "invoiceNo",
+        "contract_no": "contractNumber",
+        "total": { "path": "amount.gross", "type": "money" },
+        "vat": { "path": "amount.vat", "type": "money" },
+        "status": "state",
+        "issue_date": { "path": "issuedOn", "type": "date" },
+        "due_date": { "path": "dueOn", "type": "date" },
+        "balance": { "path": "outstanding", "type": "money" },
+        "url": "pdf"
+      }
+    },
+    "fines": {
+      "source": "orion",
+      "path": "/contracts/{contract_no}/fines",
+      "result": "data",
+      "map": {
+        "reference": "ref",
+        "contract_no": "contractNumber",
+        "type": { "path": "category", "map": { "SALIK": "Salik Toll", "TRAFFIC": "Traffic Fine" } },
+        "amount": { "path": "amount", "type": "money" },
+        "admin_fee": { "path": "adminFee", "type": "money" },
+        "status": "state",
+        "issued_at": { "path": "issuedAt", "type": "datetime" }
+      }
+    },
+    "financials": {
+      "source": "orion",
+      "path": "/contracts/{contract_no}/deposit",
+      "result": "data",
+      "map": {
+        "deposit_amount": { "path": "deposit.amount", "type": "money" },
+        "deposit_status": "deposit.state",
+        "deposit_refund_due": { "path": "deposit.refundDue", "type": "date" },
+        "preauth_amount": { "path": "cardHold.amount", "type": "money" },
+        "preauth_status": "cardHold.state",
+        "preauth_released_at": { "path": "cardHold.releasedOn", "type": "date" },
+        "card_last4": "cardHold.last4"
+      }
+    }
+  }
+}

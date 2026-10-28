@@ -1,0 +1,342 @@
+[
+ {
+  "expected": "unrecognized_charge",
+  "subject": "strange amount on my visa",
+  "body": "hi there is a payment of AED 236 from autostrad on my visa ending 8842 yesterday and i didnt authorise anything like that, i returned the car 3 weeks back and everything was settled. what is this for"
+ },
+ {
+  "expected": "unrecognized_charge",
+  "subject": "Amount taken from my card after I returned the car (AST-104587)",
+  "body": "Dear Customer Happiness team,\n\nI rented a Hyundai Accent from your Dubai Marina branch from 2 to 9 October (contract AST-104587) and settled the full amount when I collected the car. This morning my bank sent me an SMS about a debit of AED 412.50 from Autostrad on my Mastercard ending 3317. I have not received any email, invoice or explanation for this amount and I do not agree to it until I understand what it covers.\n\nPlease send me a breakdown of this deduction. If it was taken by mistake I expect it to be reversed.\n\nRegards,\nKarim Haddad\n+971 50 555 0142"
+ },
+ {
+  "expected": "unrecognized_charge",
+  "subject": "خصم من البطاقة",
+  "body": "السلام عليكم\nشفت على بطاقتي خصم ٣٤٠ درهم من اوتوستراد وانا ما اعرف ليش. السيارة رجعتها قبل اسبوعين وكل شي كان تمام وما عليّ شي. ممكن تفيدوني شو هذا المبلغ؟"
+ },
+ {
+  "expected": "unrecognized_charge",
+  "subject": "charge على الكارد",
+  "body": "Hi, اليوم لقيت خصم 129 AED على الكارد اللي ينتهي بـ 6025 وما عرفت ايش هو. العقد AST-110245 خلص قبل 10 ايام وكل المبالغ كانت مدفوعة. Please check and tell me what this amount is, thanks"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "pending hold still on my card",
+  "body": "Hello,\n\nI returned the Toyota Corolla at Abu Dhabi Airport on 3 October (AST-101992). The AED 1,000 hold on my card ending 7710 is still showing as pending in my banking app, more than 3 weeks later. Your agent said it would be released within 7 days. Kindly check the status and revert with the date the release will reach my bank.\n\nThanks,\nAhmed"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "",
+  "body": "my card is still blocked for 2000 aed since i returned the car 2 weeks ago when will u free it"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "بخصوص المبلغ المحجوز على بطاقتي",
+  "body": "السادة شركة أوتوستراد المحترمين،\n\nتحية طيبة وبعد،\n\nلا يزال مبلغ 1500 درهم محجوزاً على بطاقتي الائتمانية المنتهية بالرقم 4093 منذ تسليم المركبة في فرع ديرة بتاريخ 8 أكتوبر، علماً بأن العقد رقم AST-103306 أُغلق دون أي ملاحظات. أرجو التكرم بإفادتي عن موعد فك الحجز عن المبلغ.\n\nوتفضلوا بقبول فائق الاحترام،\nسالم الكعبي"
+ },
+ {
+  "expected": "preauth_followup",
+  "subject": "card still pending + something for my accountant",
+  "body": "Hi team,\n\nTwo things about the Nissan Patrol I returned on 14 Oct at your Sharjah branch (no damage, all signed off). My accountant would like the tax invoice whenever you get a chance. The more urgent thing is that the pre-authorisation of AED 3,000 is still pending on my Emirates NBD card ending 5521 and it is eating into my limit. I am travelling on Friday, so I need it released before then.\n\nThanks,\nMariam"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "Tax invoice for AST-105533",
+  "body": "Good morning,\n\nPlease issue a VAT invoice in the name of Gulf Horizon Trading LLC (TRN 100345678900003) for the rental under contract AST-105533, 12 to 19 October. We need it for our month end accounts. Kindly do the needful and revert.\n\nThank you,\nRajesh Menon\nAccounts Department"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "receipt",
+  "body": "hello can i get the receipt for the car i rented last week from Deira? paid cash AED 780, need it for reimbursement at work"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "فاتورة العقد AST-107340",
+  "body": "السلام عليكم ورحمة الله،\n\nأحتاج فاتورة ضريبية رسمية لعقد الإيجار رقم AST-107340 باسم شركتي، وأرجو إرسالها على هذا البريد في أقرب وقت لأن المحاسب يطلبها لإقفال الشهر.\n\nشاكر لكم،\nيوسف المنصوري"
+ },
+ {
+  "expected": "invoice_request",
+  "subject": "never got the invoce",
+  "body": "Hi, I was told the invoice would be emailed to me after I returned the car at Dubai Marina on Sunday but nothing came, I checked spam also. Can you resend it please. Booking is under Fatima Al Zaabi. Thx"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "Re: Vehicle return confirmation",
+  "body": "Hi,\n\nIt is now 3 weeks since I returned the car and I still have not received the deposit money. Can someone confirm when it will actually arrive in my account? I called twice and was told it is being processed.\n\nRegards,\nHamza Qureshi\n\nOn Mon, 5 Oct 2026 at 10:41, Customer Happiness <helpdesk@autostrad.com> wrote:\n> Dear Mr Hamza,\n>\n> Thank you for returning the vehicle under contract AST-108124. Your security deposit of AED 1,500 will be processed within 14 working days.\n>\n> Best regards,\n> Customer Happiness\n> Autostrad Car Rental"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "التأمين",
+  "body": "مساء الخير، رجعت السيارة من ٣ اسابيع وتأميني ٢٠٠٠ درهم للحين ما رجع لي. متى بيرجع؟"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "بخصوص مبلغ التأمين المدفوع",
+  "body": "السادة الكرام،\n\nتم تسليم السيارة في فرع مطار أبوظبي بتاريخ 1 أكتوبر 2026 بموجب العقد رقم AST-112406، ولم يتم إرجاع مبلغ التأمين (1,000 درهم) إلى حسابي حتى الآن رغم مرور أكثر من ثلاثة أسابيع. أرجو إفادتي بسبب التأخير وبالموعد المتوقع للتحويل إلى حسابي المصرفي.\n\nمع الشكر،\nعبدالله الشامسي\n050 555 0173"
+ },
+ {
+  "expected": "deposit_refund",
+  "subject": "deposite not back yet",
+  "body": "Morning. I paid AED 2,500 security deposit in cash at Deira when I took the Pajero. It was supposed to come back 14 days after return and its been 20 days now. If there is any Salik or fine to be deducted from it just send me the details, but I want the balance sent to my bank account. Thanks, Imran"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "Can you pick the car up from my building?",
+  "body": "Hi,\n\nI am leaving the country tonight and cannot come to the branch. Could your team collect the Kia Sportage (AST-106719) from my building in JLT, Cluster D, tomorrow morning around 9? I will leave the keys with the security desk and send you photos of the car. Please confirm if this is possible and whether there is a collection fee.\n\nThanks,\nNadia"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "السيارة",
+  "body": "هلا، ابي احد من عندكم يمر ياخذ السيارة من البيت في الشارقة بكرة الصبح، عقدي ينتهي بكرة. يعطيكم العافية"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "end rental early",
+  "body": "need to end my rental early can you send someone to collect the car from Dubai Marina Mall parking today evening"
+ },
+ {
+  "expected": "vehicle_collection",
+  "subject": "collect car from airport / تسليم السيارة",
+  "body": "Hello team, my flight is at 6am and your branch at Abu Dhabi Airport will be closed at that time. ممكن تستلمون السيارة من موقف المغادرين (departures parking) الليلة الساعة 11؟ Contract AST-114028. المفتاح اسلمه لأمن المطار or I can leave it with the car if you allow. Please advise, thanks. Omar"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "Salik trips on AST-109018 look wrong",
+  "body": "Dear team,\n\nOn the statement for contract AST-109018 (4 to 11 Oct, Honda Accord) I can see 14 Salik trips, each with an admin fee of AED 5 on top. I only drove through the gate twice. The rest of the days the car was parked at my hotel in Abu Dhabi. Please check the toll records, I think the plate may have been read wrongly, and remove the extra trips and the admin fees. I can send the hotel booking as proof.\n\nThanks,\nPeter Collins"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "speeding ticket??",
+  "body": "got a message that you charged me AED 600 for a speeding fine in sharjah but i never drove on that road that day, how do i contest this\n\nSent from my iPhone"
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "مخالفة مو من عندي",
+  "body": "السلام عليكم، وصلني خصم مخالفة سرعة ٤٠٠ درهم زائد ٥٠ درهم رسوم ادارية على العقد AST-115662. المخالفة بتاريخ ١٧ اكتوبر وانا مسلّم السيارة يوم ١٥. ارجو تراجعون التاريخ والوقت وتلغون المخالفة والرسوم."
+ },
+ {
+  "expected": "fine_dispute",
+  "subject": "what is this AED 50 admin thing on my card",
+  "body": "Hello, I can see a deduction on my card of AED 250 which your SMS describes as RTA fine plus AED 50 service fee for contract AST-111873. I do not accept the fee on top of a fine that I believe is wrong in the first place, the time shows 02:14 AM and I was already at the airport. Please send me the fine notice and cancel it."
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "scratch charge not fair",
+  "body": "Hello,\n\nYou took AED 750 from my card ending 2290 for a scratch on the rear bumper of the Nissan Sunny (AST-100871). That scratch was already there when I picked the car up at Deira, I even filmed the car at pick up and can send you the video. The agent who received the car on return looked at it too and said everything was fine. Please review the check in photos and cancel the charge.\n\nRegards,\nAli Tahir"
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "cleaning fee ???",
+  "body": "Hi, ليش حسبتوا علي AED 200 cleaning fee? I returned the car clean at Mussafah, غسلتها بنفسي قبل التسليم"
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "اعتراض على مبلغ الأضرار",
+  "body": "السادة الكرام،\n\nأعترض على مبلغ الأضرار البالغ 1,200 درهم المحتسب على العقد رقم AST-113590 بسبب خدش في الباب الأمامي الأيمن، فقد كان الخدش موجوداً عند الاستلام ولم يُسجل في نموذج الفحص. أطلب مراجعة صور الاستلام والتسليم وإلغاء المبلغ.\n\nمع التقدير،\nخالد العتيبي"
+ },
+ {
+  "expected": "damage_dispute",
+  "subject": "fuel charged but tank was full",
+  "body": "Hey guys, I returned the car with a full tank at Abu Dhabi Airport, I have the ADNOC pump recipt dated 19 Oct 6:40pm, but your system charged me AED 185 for fuel. Please correct this. Thanks, Sana\n\nGet Outlook for Android"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "paid twice by mistake",
+  "body": "Hello, I think the payment for contract AST-120067 went through two times on 14 October, AED 960 each, on my Visa ending 1186. I only owe one of them. Kindly refund the second payment back to the same card."
+ },
+ {
+  "expected": "refund_request",
+  "subject": "cancelling my booking",
+  "body": "Hi, I had to cancel my booking for next weekend because my flight got cancelled. I already paid AED 450 in advance online, I recieved the confirmation email on 20 Oct. Can I please get my money back? Thanks, Sophie"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "فرق زايد انسحب علي",
+  "body": "السلام عليكم، انحسب علي يومين زيادة مع اني رجعت السيارة بدري في الموعد المتفق، العقد AST-122798. ابي استرجاع الفرق ٣٨٠ درهم على نفس البطاقة. مشكورين"
+ },
+ {
+  "expected": "refund_request",
+  "subject": "advance payment after cancellation",
+  "body": "Good evening,\n\nI cancelled my reservation for the Mitsubishi Attrage (pickup Sharjah, 24 October) on the 21st, well over 48 hours before pickup, and I got a cancellation confirmation by email. I paid AED 600 in advance on the website and so far nothing has come back to my account. Please process the refund to my Visa ending 9034 and let me know how many days it will take.\n\nKind regards,\nElena Petrova"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "extend by 3 days?",
+  "body": "Hi, can I keep the car (AST-116301) until Sunday 1 November instead of Wed 28 Oct? Same car, same rate if possible. Thansk"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "مدة الايجار",
+  "body": "السلام عليكم، ابغى ازيد مدة ايجار السيارة اسبوع، السيارة عندي من يوم ١٥ اكتوبر. شو الاجراء المطلوب؟"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "Change of dates for AST-102265",
+  "body": "Dear Autostrad,\n\nMy plans changed. The rental under AST-102265 was booked from 2 to 12 November, but I now need the car only until 8 November because I am flying out earlier. Could you please shorten the booking and adjust the amount accordingly? Pick up stays the same, Dubai Marina branch on 2 Nov at 10am.\n\nPlease let me know if I need to do anything on my side.\n\nKind regards,\nJulia Fischer"
+ },
+ {
+  "expected": "contract_extension",
+  "subject": "تعديل الحجز AST-117754",
+  "body": "Hello, عندي حجز لين يوم الجمعة بس ابغى ازيده يوم زيادة (Saturday). Also I will return at Abu Dhabi Airport instead of Deira. العقد AST-117754. Is that ok?"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "Re: Re: your enquiry",
+  "body": "Hello, the contract number is AST-118219. Please send me the signed copy of the rental agreement, my insurer wants it.\n\nThanks\nBilal\n\nOn 19 Oct 2026, at 16:20, Autostrad Customer Happiness <helpdesk@autostrad.com> wrote:\n\n> Dear Customer, to locate your document please reply with your contract number and the name on the booking.\n> Kind regards,\n> Customer Happiness"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "Statement of account Jan to Oct 2026",
+  "body": "Good afternoon,\n\nWe are a small logistics company and have rented vans from you since January. Our accountant needs a statement of account covering all contracts from 1 January to 31 October 2026 so we can reconcile before month end. Please send it as a PDF to this email address. The account name is Desert Route Logistics.\n\nThank you,\nVikram Shah\nOperations Manager"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "صورة من اتفاقية الإيجار الموقعة",
+  "body": "تحية طيبة،\n\nأرجو التكرم بإرسال صورة من اتفاقية الإيجار الموقعة رقم AST-119480 إلى بريدي الإلكتروني، حيث فقدت النسخة التي استلمتها من الفرع.\n\nشكراً لكم،\nهند الكتبي"
+ },
+ {
+  "expected": "contract_copy",
+  "subject": "lost my paperwork",
+  "body": "hi, i lost the paperwork they gave me when i collected the car on 5 Oct at Sharjah. can you emial me a copy of the signed handover form with the car diagram? thanks"
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "URGENT flat tyre",
+  "body": "Flat tyre on the Sunny (Dubai plate N 29381) near Jebel Ali on E11 heading to Abu Dhabi. No spare in the boot. Please send help asap"
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "السيارة فيها مشكلة",
+  "body": "السلام عليكم، طلع لي مؤشر الزيت الاحمر على الدشبورد وفيه صوت غريب من المكينة، وقفت على جنب في شارع الشيخ زايد. شو اسوي؟ ابغى سيارة بدالها"
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "حادث تصادم بسيط",
+  "body": "السادة أوتوستراد،\n\nتعرضت اليوم لحادث تصادم بسيط في منطقة الخالدية بأبوظبي (العقد AST-126094). لا توجد إصابات، وقد أصدرت الشرطة تقرير الحادث. أرجو إرشادي إلى الخطوات اللازمة وتوفير سيارة بديلة إن أمكن.\n\nمحمد الحوسني"
+ },
+ {
+  "expected": "vehicle_issue",
+  "subject": "engine light on and car shaking, AST-121335",
+  "body": "Hello,\n\nThe check engine light came on in the Toyota Camry I picked up on Sunday and the car jerks badly when I accelerate. I am in Sharjah near City Centre and I do not want to drive it any further. Can you arrange a replacement car today? If you can, please also keep the new one until next Wednesday instead of Monday.\n\nThanks,\nDaniel"
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "Re: We have received your request (ticket 48213)",
+  "body": "This is my fourth email and still nobody has replied, not even a one line acknowledgement. You promised an answer within 24 hours on the 14th and it is now the 22nd. I called the number on your website twice and it just rings out. Is anyone reading this mailbox? I am still waiting on my deposit as well, but honestly it is the total silence that I am complaining about now. Please have a manager contact me.\n\nSent from my iPhone\n\nOn Wed, 14 Oct 2026 at 09:12, Autostrad Customer Happiness <helpdesk@autostrad.com> wrote:\n> Dear Customer,\n> Thank you for contacting Autostrad. Your request regarding contract AST-124850 has been received and will be answered within 24 hours.\n> Ticket 48213"
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "Waited 2 hours at Deira branch",
+  "body": "Hello,\n\nI had a confirmed booking for 10am on Saturday at your Deira branch. I arrived on time and waited almost two hours before my paperwork was processed. When I asked why, nobody could give me a straight answer and the car was only handed over at 12:15. I lost half my day and my family was waiting outside in the heat. This is not the standard I expect from a company that advertises premium service. I would like to hear from a manager.\n\nRegards,\nAnwar Siddiqui"
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "ما احد يرد",
+  "body": "من اسبوعين وانا اراسلكم وما فيه رد من احد، ولا تردون على التلفون. ابغى احد يتواصل معي اليوم، هذي خدمة مو مقبولة"
+ },
+ {
+  "expected": "service_complaint",
+  "subject": "late delivery to my hotel",
+  "body": "Hi, I ordered delivery to my hotel in Dubai Marina for 8am on Monday (contract AST-123412). The car arrived at 11:30 and nobody told me about the delay, I had to call three times to find out where it was. I had a business meeting and ended up in a taxi. Just putting this on record, I expected much better."
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "Rude agent at Abu Dhabi Airport desk",
+  "body": "To whom it may concern,\n\nI am writing about the agent who served me at your Abu Dhabi Airport desk on 21 October around 7pm. I did not catch his full name but his tag said Faisal. When I asked politely about the insurance options he rolled his eyes, talked over me and said that if I did not like the terms I could go elsewhere. He was also on his phone while handing me the keys. I have rented from you before and never experienced this kind of attitude. Please take it up with him.\n\nThanks,\nLinda Roberts"
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "your guy at the Sharjah branch",
+  "body": "the guy at the sharjah branch shouted at me in front of other customers for asking a simple question, very unprofessional behaviour"
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "سلوك أحد موظفيكم",
+  "body": "السادة الكرام،\n\nأود إبلاغكم بتجربة غير لائقة مع أحد موظفي فرع ديرة أثناء تسليم السيارة (العقد AST-127381)، حيث تحدث إليّ بأسلوب متعالٍ وغير مهذب وأنهى الحديث قبل أن أكمل سؤالي. أرجو التحقيق في الأمر ومعالجته، فهذا التصرف لا يليق بسمعة الشركة.\n\nمع التحية،\nنورة الظاهري"
+ },
+ {
+  "expected": "staff_complaint",
+  "subject": "AST-128756 attitude of your employee",
+  "body": "Hello, when I returned the car at Dubai Marina the employee (a tall guy named Hassan) accused me of lying about the fuel level and spoke to me in a very disrespectful tone in front of my wife. In the end he added a refuelling fee of AED 60 which I paid just to leave. The money is not my concern, I want someone to speak to him about how he treats customers."
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "car was filthy",
+  "body": "The Corolla you gave me this morning at Deira was dirty inside, crumbs all over the seats and a bad smel, and the windscreen was covered in dust. Not acceptable for what I paid."
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "Not the car I booked (AST-129204)",
+  "body": "Hello,\n\nI reserved a Toyota Fortuner 7 seater under contract AST-129204 for my family of six, but at Dubai Marina I was handed a Nissan Sunny. The agent said the SUV was not available and nobody told me before I arrived. The Sunny also had a cracked windscreen and a dent on the left door. Please either arrange the SUV I booked or tell me what you intend to do about this.\n\nRegards,\nGeorge Matthew"
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "حالة السيارة",
+  "body": "استلمت السيارة اليوم من فرع الشارقة وفيها ريحة سجاير قوية والمقاعد متسخة وفيه خدوش واضحة على الصدام الخلفي. ما توقعت هالمستوى من شركتكم"
+ },
+ {
+  "expected": "vehicle_condition_complaint",
+  "subject": "bald tyres and stained seats on the Pajero",
+  "body": "Dear Sir/Madam,\n\nI collected a Mitsubishi Pajero from the Abu Dhabi Airport branch on 18 October (AST-130511). Looking at it properly in daylight, the front tyres are almost bald, the back seat has a large stain and the dashboard cover is cracked. I did not notice at the desk because it was night. I am not comfortable driving to Al Ain in this condition and I do not think this car should be handed to customers. I want this on record.\n\nRegards,\nMohammed Rafiq"
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "extra lines on my bill",
+  "body": "I was quoted AED 95 a day online for the Hyundai i10 but the final bill for AST-131977 came to AED 820 for 6 days. There are lines for airport surcharge, service fee and tourism fee that nobody explained when I booked. This feels like a bait and switch. Please explain each line or correct the bill."
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "wrong total",
+  "body": "your invoice has the wrong number of days, I rented for 4 days not 6"
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "الاسعار",
+  "body": "السعر اللي انقال لي بالتلفون كان ١٢٠ درهم باليوم لكن الفاتورة طالعة ١٨٥ مع رسوم ما احد قال لي عنها. هذا مو تعامل واضح، ابغى تفسير للرسوم"
+ },
+ {
+  "expected": "billing_complaint",
+  "subject": "Billing for AST-132648 makes no sense",
+  "body": "Hello,\n\nI have just received the final bill for my monthly rental (contract AST-132648, Mazda 3, Sharjah branch). The agreed monthly rate was AED 2,400 but the invoice shows AED 2,950 including additional mileage of 800 km, although the contract says 3,000 km are included and my odometer reading is 2,100 km. I also see VAT calculated twice. The invoice is simply wrong and I am quite upset about the lack of transparency. I would like a corrected one.\n\nRegards,\nTariq Mahmood"
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "monthly rates for SUV?",
+  "body": "Hi, I rented from you in March (AST-100123) and it went well. Now I am looking for a Nissan Kicks or similar on a monthly basis from the first week of November at Abu Dhabi Airport. What is the rate and is one available? Do you ask for a deposit and which cards do you acept?"
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "اوقات الدوام",
+  "body": "السلام عليكم، فرع ديرة يفتح يوم الجمعة ولا لا؟ وهل ممكن استلم السيارة بالليل بعد الساعة ١٠؟"
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "المستندات المطلوبة للاستئجار",
+  "body": "تحية طيبة،\n\nأرغب في معرفة المستندات المطلوبة لاستئجار سيارة لزائر، وهل تكفي رخصة القيادة الدولية أم يلزم تقديم رخصة بلد الإقامة أيضاً؟ وما هو الحد الأدنى للعمر؟\n\nشكراً لكم"
+ },
+ {
+  "expected": "general_inquiry",
+  "subject": "few questions before I book",
+  "body": "Hello, before I book a Corolla for 10 days from Dubai Marina I have a few questions. How do you handle Salik, is it billed after the rental, and is there an admin fee on traffic fines? What is the daily mileage limit? Can my wife be added as a second driver at no extra cost? Thanks, Marco"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "Automatic reply: Your rental contract AST-133205",
+  "body": "Thank you for your message. I am currently out of the office with limited access to email and will return on Monday 2 November. If your matter is urgent please call my colleague Sara Nasser on +971 4 555 0100.\n\nKind regards,\nOmar Khalil\nMeridian Trading LLC"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "Delivery Status Notification (Failure)",
+  "body": "Address not found\n\nYour message wasn't delivered to ahmed.k@oldmail.example because the address couldn't be found, or is unable to receive mail.\n\nThe response from the remote server was:\n550 5.1.1 The email account that you tried to reach does not exist. Please try double-checking the recipient's email address for typos or unnecessary spaces.\n\nOriginal message subject: Your tax invoice for contract AST-134872"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "Get your car rental website on Google page 1 (special offer)",
+  "body": "Hello Sir/Madam,\n\nWe are a digital marketing agency and we can place your website on the first page of Google in 30 days. Special offer this week: 5 keywords for USD 99 only. Reply YES to receive a free audit report.\n\nTo unsubscribe reply STOP.\n\nBest regards,\nBrightLeap Digital"
+ },
+ {
+  "expected": "spam_or_auto",
+  "subject": "النشرة الأسبوعية: عروض حصرية لأصحاب الشركات",
+  "body": "مرحباً بكم،\n\nفي نشرة هذا الأسبوع: خصم 40% على باقات الرسائل النصية والواتساب للشركات في الإمارات، وأحدث أدوات التسويق الرقمي لقطاع تأجير السيارات. للاشتراك في الباقة تواصلوا معنا عبر الواتساب.\n\nلإلغاء الاشتراك من هذه النشرة اضغطوا على الرابط أدناه.\nhttps://news.example.com/unsubscribe"
+ }
+]
