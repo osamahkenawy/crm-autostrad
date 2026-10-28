@@ -86,7 +86,9 @@ function invoiceOf(row, spec, ctx, today) {
   if (m.number === undefined && m.id === undefined) return null;
   let status = canon('invoice', m.status);
   let balance = m.balance;
-  if (balance === undefined) balance = status === 'paid' || status === 'cancelled' ? 0 : (m.total ?? undefined);
+  if (balance === undefined && (!status || ['paid', 'cancelled', 'sent', 'overdue', 'partial', 'draft'].includes(status))) {
+    balance = status === 'paid' || status === 'cancelled' ? 0 : (m.total ?? undefined);
+  } // a status the helpdesk does not know says nothing about what is left to pay: the balance stays unknown
   if (!status && balance !== undefined) status = balance <= 0 ? 'paid' : 'sent';
   if ((status === 'sent' || status === 'partial') && balance > 0 && m.due_date && m.due_date < today) status = 'overdue';
   return { id: m.id !== undefined ? String(m.id) : String(m.number), number: m.number !== undefined ? String(m.number) : String(m.id), contract_no: m.contract_no ?? null, total: m.total ?? null, vat: m.vat ?? null, status: status ?? null, issue_date: m.issue_date ?? null, due_date: m.due_date ?? null, balance: balance ?? null, currency: m.currency || 'AED', url: safeUrl(m.url) };

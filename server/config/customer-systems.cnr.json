@@ -1,0 +1,128 @@
+{
+  "_comment": [
+    "The real connection: the read-only CRM API built into the CNR Portal (Laravel, /api/crm/v1), which reads the Fleet database. Its answers and identifiers are described in the CNR repository, CRM_API.md.",
+    "Use it with three lines in server/.env: CUSTOMER_SYSTEMS_CONFIG=config/customer-systems.cnr.json, CNR_BASE_URL=https://<cnr portal>/api/crm/v1 and CNR_API_KEY=<one of the keys in the portal's CRM_API_KEYS>.",
+    "Customers are 'P<code>' (primary customer, the billed account) or 'H<code>' (hirer). A contract belongs to its primary customer when it has one, else to its hirer, so a driver writing about a company contract is asked to be confirmed by staff.",
+    "Contract numbers are '<type>-<number>' (MRA-6022600031); a bare number works too and picks the open contract, then the newest.",
+    "Contract status codes other than O (active) and C (completed) arrive without a status until Fleet confirms what they mean. Invoices say 'paid' only when the portal took the payment; any other invoice is 'unconfirmed' (it may have been paid at a counter or by transfer), is never counted as owed and has no balance. There is no deposit or card-hold lookup yet."
+  ],
+  "enabled": true,
+  "fallback_to_crm": false,
+  "freshness_minutes": 10,
+  "utc_offset_hours": 4,
+  "sources": {
+    "cnr": {
+      "label": "CNR Portal (Fleet)",
+      "base_url_env": "CNR_BASE_URL",
+      "auth": { "type": "api_key", "header": "X-Api-Key", "key_env": "CNR_API_KEY" },
+      "timeout_ms": 8000,
+      "cache_seconds": 300,
+      "max_concurrent": 4
+    }
+  },
+  "lookups": {
+    "customer_by_email": {
+      "source": "cnr",
+      "path": "/customers",
+      "query": { "email": "{email}" },
+      "result": "data",
+      "map": {
+        "id": "id",
+        "name": "name",
+        "email": "email",
+        "emails": { "path": "emails", "type": "list" },
+        "phone": "phone",
+        "segment": "segment",
+        "status": "status"
+      }
+    },
+    "customer_by_id": {
+      "source": "cnr",
+      "path": "/customers/{customer_id}",
+      "result": "data",
+      "map": {
+        "id": "id",
+        "name": "name",
+        "email": "email",
+        "emails": { "path": "emails", "type": "list" },
+        "phone": "phone",
+        "segment": "segment",
+        "status": "status"
+      }
+    },
+    "contract": {
+      "source": "cnr",
+      "path": "/contracts/{contract_no}",
+      "result": "data",
+      "map": {
+        "contract_no": "contract_no",
+        "id": "id",
+        "status": "status",
+        "product_line": "product_line",
+        "start_at": { "path": "start_at", "type": "datetime" },
+        "end_at": { "path": "end_at", "type": "datetime" },
+        "total_amount": { "path": "total_amount", "type": "money" },
+        "currency": "currency",
+        "customer_id": "customer_id",
+        "customer_email": { "path": "customer.email", "type": "email" },
+        "customer_name": "customer.name",
+        "customer_phone": "customer.phone",
+        "customer_segment": "customer.segment",
+        "vehicle_name": "vehicle.name",
+        "vehicle_plate": "vehicle.plate",
+        "branch_name": "branch.name",
+        "branch_emirate": "branch.emirate"
+      }
+    },
+    "contracts_by_customer": {
+      "source": "cnr",
+      "path": "/contracts",
+      "query": { "email": "{email}", "limit": "10" },
+      "scoped": true,
+      "result": "data",
+      "map": {
+        "contract_no": "contract_no",
+        "id": "id",
+        "status": "status",
+        "product_line": "product_line",
+        "start_at": { "path": "start_at", "type": "datetime" },
+        "end_at": { "path": "end_at", "type": "datetime" },
+        "total_amount": { "path": "total_amount", "type": "money" },
+        "customer_id": "customer_id",
+        "customer_email": { "path": "customer.email", "type": "email" },
+        "vehicle_name": "vehicle.name",
+        "vehicle_plate": "vehicle.plate",
+        "branch_name": "branch.name"
+      }
+    },
+    "invoices": {
+      "source": "cnr",
+      "path": "/contracts/{contract_no}/invoices",
+      "result": "data",
+      "map": {
+        "number": "number",
+        "id": "id",
+        "contract_no": "contract_no",
+        "total": { "path": "total", "type": "money" },
+        "status": { "path": "status", "default": "unconfirmed" },
+        "issue_date": { "path": "issue_date", "type": "date" },
+        "due_date": { "path": "due_date", "type": "date" },
+        "currency": "currency"
+      }
+    },
+    "fines": {
+      "source": "cnr",
+      "path": "/contracts/{contract_no}/fines",
+      "result": "data",
+      "map": {
+        "reference": "reference",
+        "id": "id",
+        "contract_no": "contract_no",
+        "type": "type",
+        "amount": { "path": "amount", "type": "money" },
+        "admin_fee": { "path": "admin_fee", "type": "money" },
+        "issued_at": { "path": "issued_at", "type": "datetime" }
+      }
+    }
+  }
+}
