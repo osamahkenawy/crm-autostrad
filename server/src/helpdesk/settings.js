@@ -24,6 +24,8 @@ export const DEFAULTS = {
   // Regular expressions (as strings) that capture a contract number in group 1. Add Autostrad's real format here.
   contract_patterns: [
     '\\b(AST[-\\s]?\\d{5,8})\\b',
+    // Fleet contract numbers as the CNR Portal writes them: type and number, e.g. MRA-6022600031
+    '\\b((?:RAC|MRA|LES|LTO)[-\\s/]?[1-9]\\d{7,10})\\b',
     // separators are a short bounded run: runs of \\s* around optional words are cubic on a long run of spaces
     '\\b(?:contract|agreement|rental\\s+agreement|booking|reservation|RA)\\b[\\s:#.\\-]{0,6}(?:(?:no|number|num|ref(?:erence)?|id)[\\s:#.\\-]{0,6})?([A-Z]{0,4}[-/]?\\d{4,10}(?:[-/]\\d{1,6})?)',
     '(?:رقم\\s{0,3}(?:ال)?(?:عقد|ايجار|إيجار|الحجز)|عقد\\s{0,3}رقم|العقد\\s{0,3}رقم)[\\s:#\\-]{0,6}([A-Z]{0,4}[-/]?\\d{4,10})',

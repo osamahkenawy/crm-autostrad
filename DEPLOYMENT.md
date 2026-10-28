@@ -244,7 +244,9 @@ HELPDESK_SEND_MODE=draft_only                   # replies are saved in Outlook D
 
 # The contract, customer and invoice systems (CUSTOMER_API.md) and the optional AI
 HELPDESK_ACCOUNT_SOURCE=api
-ORION_BASE_URL=...   ORION_API_KEY=...   CNR_BASE_URL=...   CNR_API_KEY=...
+CUSTOMER_SYSTEMS_CONFIG=config/customer-systems.cnr.json   # the CNR Portal's read-only API (CUSTOMER_API.md, "Connecting the CNR Portal")
+CNR_BASE_URL=https://payment-portal.enguae.com/api/crm/v1
+CNR_API_KEY=...
 ANTHROPIC_API_KEY=...
 ```
 

@@ -4,9 +4,30 @@ For the people who own **Orion Fleet**, the **CNR Portal** (or whichever systems
 configures the connection. The helpdesk itself is described in [HELPDESK.md](HELPDESK.md); what infrastructure must provide is in
 [INFRA_REQUIREMENTS.md](INFRA_REQUIREMENTS.md).
 
-**Status:** built and tested against a stand-in API (`server/scripts/mock-customer-api.mjs`); **not yet connected to the real systems**, because
-their API documentation has not been supplied. Connecting them means writing one JSON file and putting two keys in `server/.env`. No code change
-is expected unless an API does something unusual (section 9).
+**Status:** **the CNR Portal now answers every question except deposit and card hold**, from the Fleet database, through a read-only API
+built into the portal (`/api/crm/v1`, described in the CNR repository's `CRM_API.md`). It was tested end to end against UAT data. The ready
+configuration is `server/config/customer-systems.cnr.json`: see [Connecting the CNR Portal](#connecting-the-cnr-portal) below. The
+stand-in API (`server/scripts/mock-customer-api.mjs`, `npm run dev:live`) is still there for trying the screens without a connection.
+
+### Connecting the CNR Portal
+
+Three lines in `server/.env`, then restart:
+
+```dotenv
+CUSTOMER_SYSTEMS_CONFIG=config/customer-systems.cnr.json
+CNR_BASE_URL=https://payment-portal.enguae.com/api/crm/v1
+CNR_API_KEY=<one of the keys in the portal's CRM_API_KEYS>
+```
+
+What to know about its answers:
+
+* Customers are `P<code>` (the primary customer: the billed account, often a company) or `H<code>` (the hirer: the driver). A contract
+  belongs to its primary customer when it has one, else to its hirer. So a driver writing about a company car is **not confirmed** until staff
+  confirm them, and a person who is both account holder and hirer gets the note "2 customers share the address".
+* Contract numbers are `MRA-6022600031`. A bare number works too (the open contract, then the newest), and emails are read for `RAC`, `MRA`,
+  `LES` and `LTO` numbers.
+* Invoices say **paid** only when the portal itself took the payment. Every other invoice is **unconfirmed**: shown, never counted as owed, no balance.
+* The CRM server must resolve the portal's name to 10.4.2.200 and be allowed through its firewall on 443.
 
 ---
 
@@ -198,6 +219,7 @@ Text is cleaned (control and direction-changing characters removed, 2,000 charac
 
 Statuses are understood in the usual words without any mapping (`ON_RENT`, `Returned`, `UNPAID`, `Partially Paid`, `past due` and so on); anything else is kept as written and shown as plain words.
 An invoice that is sent, has something left to pay and is past its due date is shown as **overdue** even if the system only says "open". Totals of what is owed count **invoices only**, never drafts.
+An invoice status the helpdesk does not know (such as "unconfirmed") is shown as written and says nothing about what is owed: without a mapped `balance` it has none.
 
 ### Setting it up
 
@@ -278,6 +300,7 @@ What is stored with a case: the customer's name, address and phone, the contract
 
 ```
 server/config/customer-systems.json            the configuration (off by default)          customer-systems.example.json   a worked example
+server/config/customer-systems.cnr.json        the real connection: the CNR Portal's CRM API (section "Connecting the CNR Portal")
 server/scripts/mock-customer-api.mjs           the stand-in systems                         npm run dev:live (settings: config/dev-live.env)
 server/src/helpdesk/systems/
   config.js     reads and checks the file               client.js     the HTTP client (sign-in, timeouts, retries, pause, cache)
