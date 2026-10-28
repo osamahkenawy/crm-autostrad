@@ -99,7 +99,8 @@ function findDate(text, now = new Date()) {
 }
 
 const AMOUNT_KEYWORDS = /(charge|charged|deduct|deposit|hold|held|block|fine|invoice|refund|paid|payment|خصم|مبلغ|تامين|تأمين|حجز|محجوز|مخالف|فاتور|استرداد|دفع)/i;
-const AMOUNT_RE = /(?:(?:AED|Dhs?\.?|Dirhams?|د\.?\s?إ|درهم|دراهم)\s*([0-9][0-9,]*(?:\.[0-9]{1,2})?))|(?:([0-9][0-9,]*(?:\.[0-9]{1,2})?)\s*(?:AED|Dhs?\.?|Dirhams?|دراهم|درهم))/gi;
+// the digits of an amount are a bounded run ({0,14} covers 10,000,000.00): an open-ended [0-9,]* restarted at every digit of "1,1,1,1,..." made this quadratic
+const AMOUNT_RE = /(?:(?:AED|Dhs?\.?|Dirhams?|د\.?\s?إ|درهم|دراهم)\s*([0-9][0-9,]{0,14}(?:\.[0-9]{1,2})?))|(?:([0-9][0-9,]{0,14}(?:\.[0-9]{1,2})?)\s*(?:AED|Dhs?\.?|Dirhams?|دراهم|درهم))/gi;
 
 /**
  * An email is untrusted input and the patterns (ours and the ones an admin saves) are regular expressions: a long run of spaces can make
@@ -107,7 +108,10 @@ const AMOUNT_RE = /(?:(?:AED|Dhs?\.?|Dirhams?|د\.?\s?إ|درهم|دراهم)\s*
  * is squeezed (a run with a line break becomes a blank line, the rest a single space) before anything is matched.
  */
 const MAX_TEXT = 40000;
-const squeeze = (t) => String(t || '').slice(0, MAX_TEXT).replace(/\s{4,}/g, (run) => (/[\r\n]/.test(run) ? '\n\n' : ' '));
+const squeeze = (t) => String(t || '').slice(0, MAX_TEXT)
+  .replace(/\s{4,}/g, (run) => (/[\r\n]/.test(run) ? '\n\n' : ' '))
+  .replace(/([^\p{L}\p{N}\s])\1{7,}/gu, '$1$1$1$1$1$1') // a run of one symbol (*****, -----, bullets) keeps six: card masks like **** still read
+  .replace(/[0-9٠-٩۰-۹]{31,}/g, (run) => run.slice(0, 30)); // no real number or reference is longer than 30 digits
 
 export function extractEntities({ subject = '', body = '', fromName = '', fromEmail = '' } = {}, ctx = {}, now = new Date()) {
   body = squeeze(body);

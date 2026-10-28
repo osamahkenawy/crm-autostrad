@@ -51,8 +51,8 @@ export const bookings = {
     { key: 'cancel', label: 'Cancel booking', short: 'Cancel', icon: Ban, tone: 'danger', when: (r) => r.status === 'upcoming' || r.status === 'active', patch: (r) => ({ status: 'cancelled', payment_status: r.payment_status === 'paid' ? 'refunded' : r.payment_status }), confirm: 'The booking is cancelled and a paid amount is marked as refunded.', success: 'Booking cancelled' },
   ],
   related: [
-    { title: 'Trips', resource: 'trips', by: 'booking_id', page: '/trips', empty: 'No trip started yet.',
-      row: (t) => ({ title: `Started ${fmtDateTime(t.started_at)}`, sub: `${num(t.distance_km)} km · ${duration(t.duration_min)}`, right: <StatusPill kind="trip" value={t.status} /> }) },
+    { title: 'Contract', resource: 'contracts', by: 'booking_id', page: '/contracts', empty: 'No contract opened yet.',
+      row: (t) => ({ title: `Opened ${fmtDateTime(t.started_at)}`, sub: `${num(t.distance_km)} km · ${duration(t.duration_min)}`, right: <StatusPill kind="contract" value={t.status} /> }) },
     { title: 'Invoices', resource: 'invoices', by: 'booking_id', page: '/invoices', empty: 'Not invoiced yet.',
       row: (i) => ({ title: i.number, sub: `Due ${fmtDate(i.due_date)}`, right: <span className="row" style={{ gap: 8 }}><b>{money(i.total)}</b><StatusPill kind="invoice" value={i.status} /></span> }) },
     { title: 'Fines & Salik', resource: 'fines', by: 'booking_id', page: '/fines', empty: 'No fines during this booking.',
@@ -114,21 +114,21 @@ export const bookings = {
   },
 };
 
-/* ------------------------------------------------------------------ trips */
+/* ------------------------------------------------------------------ contracts (the table is still called trips) */
 const elapsed = (r) => (r.status === 'live' ? (Date.now() - toDate(r.started_at).getTime()) / 60000 : r.duration_min);
 
-export const trips = {
-  resource: 'trips',
-  title: 'Trips',
-  subtitle: 'Live and completed drives, from unlock to return.',
-  singular: 'trip',
-  plural: 'trips',
+export const contracts = {
+  resource: 'contracts',
+  title: 'Contracts',
+  subtitle: 'Rental contracts: open while the car is with the customer, closed when it is returned.',
+  singular: 'contract',
+  plural: 'contracts',
   searchPlaceholder: 'Search customer or plate…',
   defaultSort: { key: 'started_at', dir: 'desc' },
-  tabs: { field: 'status', all: 'All trips', default: '', options: [{ value: 'live', label: 'Live now' }, { value: 'completed', label: 'Completed' }] },
+  tabs: { field: 'status', all: 'All contracts', default: '', options: [{ value: 'live', label: 'Open' }, { value: 'completed', label: 'Closed' }] },
   filters: [{ key: 'rating', label: 'Rating', options: [5, 4, 3, 2, 1].map((n) => ({ value: n, label: `${n} star${n > 1 ? 's' : ''}` })) }],
   columns: [
-    { key: 'booking_ref', label: 'Trip', render: (r) => <div><div className="cell-main">{r.booking_ref || `Trip #${r.id}`}</div><div className="cell-sub">{r.customer_name}</div></div>, export: (r) => r.booking_ref },
+    { key: 'booking_ref', label: 'Contract', render: (r) => <div><div className="cell-main">{r.booking_ref || `Contract #${r.id}`}</div><div className="cell-sub">{r.customer_name}</div></div>, export: (r) => r.booking_ref },
     { key: 'vehicle_name', label: 'Vehicle', render: (r) => <div><div className="cell-main">{r.vehicle_name}</div><Plate value={r.plate} /></div>, export: (r) => `${r.vehicle_name} ${r.plate}` },
     { key: 'started_at', label: 'Started', sortable: true, render: (r) => fmtDateTime(r.started_at), export: (r) => r.started_at },
     {
@@ -137,11 +137,11 @@ export const trips = {
     },
     { key: 'fare', label: 'Fare', align: 'right', sortable: true, render: (r) => <b>{money(r.fare)}</b>, export: (r) => r.fare },
     { key: 'rating', label: 'Rating', sortable: true, render: (r) => <Stars value={r.rating} />, export: (r) => r.rating },
-    { key: 'status', label: 'Status', sortable: true, render: (r) => <StatusPill kind="trip" value={r.status} />, export: (r) => r.status },
+    { key: 'status', label: 'Status', sortable: true, render: (r) => <StatusPill kind="contract" value={r.status} />, export: (r) => r.status },
   ],
-  recordTitle: (r) => r.booking_ref || `Trip #${r.id}`,
+  recordTitle: (r) => r.booking_ref || `Contract #${r.id}`,
   recordSubtitle: (r) => `${r.customer_name} · ${r.vehicle_name} (${r.plate})`,
-  badges: (r) => <StatusPill kind="trip" value={r.status} />,
+  badges: (r) => <StatusPill kind="contract" value={r.status} />,
   highlights: (r) => (
     <MiniStats items={[
       { label: 'Fare', value: money(r.fare) },
@@ -151,10 +151,10 @@ export const trips = {
   ),
   actions: () => [
     {
-      key: 'end', label: 'End trip', icon: Square, tone: 'danger', when: (r) => r.status === 'live',
-      confirm: 'The trip is closed now and the vehicle becomes available again.',
+      key: 'end', label: 'Close contract', icon: Square, tone: 'danger', when: (r) => r.status === 'live',
+      confirm: 'The contract is closed now and the vehicle becomes available again.',
       patch: (r) => ({ status: 'completed', ended_at: nowUtc(), duration_min: Math.max(1, Math.round((Date.now() - toDate(r.started_at).getTime()) / 60000)), end_fuel: r.fuel_level ?? r.start_fuel }),
-      success: 'Trip ended',
+      success: 'Contract closed',
     },
   ],
   form: {
@@ -166,7 +166,7 @@ export const trips = {
     },
     fields: [
       { key: 'booking_id', label: 'Booking', type: 'relation', relation: 'bookings', labelKey: 'booking_ref', required: true },
-      { key: 'status', label: 'Status', type: 'select', required: true, options: [{ value: 'live', label: 'Live now' }, { value: 'completed', label: 'Completed' }] },
+      { key: 'status', label: 'Status', type: 'select', required: true, options: [{ value: 'live', label: 'Open' }, { value: 'completed', label: 'Closed' }] },
       { key: 'customer_id', label: 'Customer', type: 'relation', relation: 'customers', labelKey: 'customer_name', required: true },
       { key: 'vehicle_id', label: 'Vehicle', type: 'relation', relation: 'vehicles', labelKey: 'vehicle_name', required: true },
       { key: 'started_at', label: 'Started', type: 'datetime', required: true },

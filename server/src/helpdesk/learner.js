@@ -11,6 +11,7 @@ import { SUBCATEGORIES } from './taxonomy.js';
 import { normalize } from './text.js';
 
 const KEYS = SUBCATEGORIES.map((s) => s.key);
+const KEY_SET = new Set(KEYS);
 const STOP = new Set(('the a an and or to of in on for is are was were be been it this that i my me we you your our with at by from as have has had do did not no but so if can could would please ' +
   'hi hello dear thanks thank regards kind best team autostrad rent car cars اللي في من على الي إلى عن هذا هذه ذلك ان لا ما هل مع كل او و يا انا نحن لكم لكن قد تم كان كانت السلام عليكم ورحمه الله وبركاته ' +
   'مرحبا شكرا تحيه طيبه السادة الكرام المحترمين اوتوستراد شركه ابي ابغي ابغى للحين').split(' '));
@@ -28,32 +29,37 @@ function tokens(text) {
   return out;
 }
 
-/** Term frequencies of words, word pairs and (lighter) letter groups. */
+/** Occurrence counts of words, word pairs and letter groups (the lighter weight of the letter groups is applied in vec, after the logarithm). */
 function features(text) {
   const f = new Map();
-  const add = (k, w) => f.set(k, (f.get(k) || 0) + w);
+  const add = (k) => f.set(k, (f.get(k) || 0) + 1);
   const toks = tokens(text);
   toks.forEach((t, i) => {
-    add(`w:${t}`, 1);
-    if (i > 0) add(`b:${toks[i - 1]}_${t}`, 1);
+    add(`w:${t}`);
+    if (i > 0) add(`b:${toks[i - 1]}_${t}`);
     const padded = `<${t}>`;
-    for (const n of [3, 4]) for (let j = 0; j + n <= padded.length; j++) add(`c:${padded.slice(j, j + n)}`, 0.35);
+    for (const n of [3, 4]) for (let j = 0; j + n <= padded.length; j++) add(`c:${padded.slice(j, j + n)}`);
   });
   return f;
 }
 
 const l2 = (v) => { let s = 0; for (const x of v.values()) s += x * x; s = Math.sqrt(s) || 1; for (const [k, x] of v) v.set(k, x / s); return v; };
 
-/** Everything the model learns from, with how much each source counts. */
+/** Everything the model learns from, with how much each source counts. A row with an unknown request type or a weight that is not a number is left out. */
 function collect() {
   const docs = [];
   const info = { keywords: 0, samples: 0, corrected: 0, closed: 0 };
+  // emails kept for measuring: an exact copy of one must not teach the model the answer it is then measured on
+  const held = new Set(db.prepare("SELECT subject, body FROM hd_test_cases WHERE source IN ('independent', 'imported')").all().map((t) => normalize(`${t.subject || ''}\n${t.body}`)));
   for (const k of db.prepare("SELECT sub_key, term, weight FROM hd_keywords WHERE active = 1 AND kind = 'phrase'").all()) {
-    docs.push({ label: k.sub_key, text: k.term, w: Math.max(0.5, k.weight / 3), kind: 'keyword' });
+    if (!KEY_SET.has(k.sub_key) || !k.term) continue;
+    docs.push({ label: k.sub_key, text: k.term, w: Math.max(0.5, (Number(k.weight) || 3) / 3), kind: 'keyword' });
     info.keywords++;
   }
   for (const t of db.prepare("SELECT subject, body, expected_sub_key AS label FROM hd_test_cases WHERE source NOT IN ('independent', 'imported')").all()) {
-    docs.push({ label: t.label, text: `${t.subject || ''}\n${t.body}`, w: 1.5, kind: 'sample' });
+    const text = `${t.subject || ''}\n${t.body}`;
+    if (!KEY_SET.has(t.label) || held.has(normalize(text))) continue;
+    docs.push({ label: t.label, text, w: 1.5, kind: 'sample' });
     info.samples++;
   }
   const rows = db.prepare(`SELECT c.id, c.sub_key, c.subject, c.status, c.closure_reason,
@@ -61,10 +67,12 @@ function collect() {
       EXISTS (SELECT 1 FROM hd_audit a WHERE a.case_id = c.id AND (a.action = 'classification_confirmed' OR (a.action = 'override' AND a.field = 'sub_key'))) AS corrected
     FROM hd_cases c WHERE c.sub_key IS NOT NULL`).all();
   for (const r of rows) {
-    if (!r.body) continue;
-    if (r.corrected) { docs.push({ label: r.sub_key, text: `${r.subject || ''}\n${r.body}`, w: 2, kind: 'case', caseId: r.id }); info.corrected++; }
+    if (!r.body || !KEY_SET.has(r.sub_key)) continue;
+    const text = `${r.subject || ''}\n${r.body}`;
+    if (held.has(normalize(text))) continue;
+    if (r.corrected) { docs.push({ label: r.sub_key, text, w: 2, kind: 'case', caseId: r.id }); info.corrected++; }
     else if (r.status === 'closed' && ['resolved', 'action_completed', 'customer_confirmed', 'not_applicable'].includes(r.closure_reason)) {
-      docs.push({ label: r.sub_key, text: `${r.subject || ''}\n${r.body}`, w: 0.8, kind: 'case', caseId: r.id });
+      docs.push({ label: r.sub_key, text, w: 0.8, kind: 'case', caseId: r.id });
       info.closed++;
     }
   }
@@ -80,7 +88,10 @@ function build() {
   const idf = new Map();
   for (const [k, n] of df) idf.set(k, Math.log((N + 1) / (n + 1)) + 1);
 
-  const vec = (tf) => { const v = new Map(); for (const [k, c] of tf) { const i = idf.get(k); if (i) v.set(k, (1 + Math.log(c)) * i); } return l2(v); };
+  // letter groups count for a third as much as whole words. The 0.35 is applied here, to (1 + log count): it used to be added to the count
+  // itself, so a group seen once weighed 1 + log(0.35) = -0.05, and typo-robustness, the point of the letter groups, was close to nothing
+  const CHAR_WEIGHT = 0.35;
+  const vec = (tf) => { const v = new Map(); for (const [k, c] of tf) { const i = idf.get(k); if (i) v.set(k, (1 + Math.log(c)) * i * (k[0] === 'c' ? CHAR_WEIGHT : 1)); } return l2(v); };
   const postings = new Map();
   const centroids = new Map(KEYS.map((k) => [k, new Map()]));
   const vectors = docs.map((d, i) => {
@@ -132,11 +143,12 @@ let model = null;
 let signature = null;
 const sig = () => {
   const r = db.prepare(`SELECT
-      (SELECT COUNT(*) || ':' || COALESCE(SUM(weight), 0) || ':' || COALESCE(MAX(id), 0) FROM hd_keywords WHERE active = 1) k,
+      (SELECT COUNT(*) || ':' || COALESCE(SUM(weight), 0) || ':' || COALESCE(MAX(id), 0) || ':' || COALESCE(SUM(id * 31 + length(term) * 7 + length(sub_key) * 13 + unicode(sub_key) + (CASE kind WHEN 'phrase' THEN 1 ELSE 0 END)), 0) FROM hd_keywords WHERE active = 1) k,
       (SELECT COUNT(*) || ':' || COALESCE(MAX(id), 0) FROM hd_test_cases WHERE source NOT IN ('independent', 'imported')) t,
+      (SELECT COUNT(*) || ':' || COALESCE(MAX(id), 0) FROM hd_test_cases WHERE source IN ('independent', 'imported')) h,
       (SELECT COUNT(*) FROM hd_cases WHERE status = 'closed') c,
       (SELECT COALESCE(MAX(id), 0) FROM hd_audit WHERE action IN ('override', 'classification_confirmed')) a`).get();
-  return `${r.k}|${r.t}|${r.c}|${r.a}`;
+  return `${r.k}|${r.t}|${r.h}|${r.c}|${r.a}`;
 };
 
 /** The current model, retrained first if what it learns from has changed. */
@@ -145,6 +157,7 @@ export function getModel() {
   if (!model || s !== signature) { model = build(); signature = s; }
   return model;
 }
+export const invalidateModel = () => { model = null; signature = null; };
 export const retrain = () => { model = null; return getModel(); };
 export const modelInfo = () => getModel().info;
 

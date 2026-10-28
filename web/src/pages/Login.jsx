@@ -32,7 +32,7 @@ export default function Login() {
           <h1>Every car, every customer, every journey in one place.</h1>
           <p className="lead">The operations and customer CRM for Autostrad Rent a Car across the UAE.</p>
           <div className="points">
-            <div className="point"><span className="ico"><MapPin size={19} /></span>Live fleet, trips and branches</div>
+            <div className="point"><span className="ico"><MapPin size={19} /></span>Live fleet, contracts and branches</div>
             <div className="point"><span className="ico"><Receipt size={19} /></span>Bookings, invoices, fines and Salik with VAT</div>
             <div className="point"><span className="ico"><Gauge size={19} /></span>Corporate lease pipeline and customer verification</div>
           </div>

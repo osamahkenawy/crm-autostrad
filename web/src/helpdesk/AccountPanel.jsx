@@ -16,6 +16,7 @@ const SHOWN = 5;
 
 function SourcePill({ a }) {
   if (a.source === 'api') return <Pill tone="ok">Live: {a.systems && a.systems.length ? a.systems.join(' and ') : 'customer systems'}</Pill>;
+  if (a.source === 'none') return <Pill tone="neutral">Not connected yet</Pill>;
   return <Pill tone="info">CRM demo records</Pill>;
 }
 

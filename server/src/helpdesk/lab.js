@@ -10,12 +10,13 @@ import { previewAnalysis } from './pipeline.js';
 import { nowUtc } from './routing.js';
 import { SUBCATEGORIES, SUB_BY_KEY, subByName } from './taxonomy.js';
 import { BUILT_IN_TESTS } from './testset.js';
-import { detectLanguage, normalize } from './text.js';
+import { detectLanguage, normalize, redact } from './text.js';
 
 const router = Router();
 const wrap = (fn) => async (req, res) => { try { await fn(req, res); } catch (e) { res.status(e.status || 400).json({ error: e.message || 'Something went wrong' }); } };
 const round = (n, d = 1) => (n === null || n === undefined || Number.isNaN(n) ? null : Math.round(n * 10 ** d) / 10 ** d);
 const pct = (a, b) => (b ? round((a / b) * 100) : null);
+const textOf = (v) => (v === undefined || v === null ? '' : String(v)); // null is no text, not the word "null"
 
 /** Request type from a key, a name ("Invoice Request") or a loose spelling of it. */
 export function resolveType(value) {
@@ -47,9 +48,12 @@ export function seedTestSet({ reset = false } = {}) {
 
 /* ---------------------------------------------------------------- try one email */
 router.post('/classify', wrap(async (req, res) => {
-  const { subject = '', body = '', ai = false } = req.body || {};
-  if (!String(subject).trim() && !String(body).trim()) throw new Error('Paste an email subject or body to test.');
-  if (String(body).length > 20000) throw new Error('That email is too long to test (limit 20,000 characters).');
+  const { ai = false } = req.body || {};
+  const subject = textOf(req.body && req.body.subject);
+  const body = textOf(req.body && req.body.body);
+  if (!subject.trim() && !body.trim()) throw new Error('Paste an email subject or body to test.');
+  if (body.length > 20000) throw new Error('That email is too long to test (limit 20,000 characters).');
+  if (subject.length > 1000) throw new Error('That subject is too long to test (limit 1,000 characters).');
   const useAi = Boolean(ai) && llmAvailable();
   res.json({ ...(await previewAnalysis({ subject, body, ai: useAi, learn: !(req.body && req.body.learn === false) })), ai_requested: Boolean(ai), ai_available: llmAvailable() });
 }));
@@ -66,17 +70,24 @@ router.post('/tests', wrap((req, res) => {
   const b = req.body || {};
   const key = resolveType(b.expected_sub_key);
   if (!key) throw new Error('Choose the correct request type for this email.');
-  if (!String(b.body || '').trim()) throw new Error('The email body is required.');
+  if (!textOf(b.body).trim()) throw new Error('The email body is required.');
   if (b.expected_priority && !['Critical', 'High', 'Average', 'Low'].includes(b.expected_priority)) throw new Error('Unknown priority.');
+  // a real customer email can carry a card number, an Emirates ID or an IBAN: they are masked here, exactly as they are before a case is stored,
+  // because test emails are listed to every helpdesk role (the sample library) and are copied into the audit log
+  const subject = redact(textOf(b.subject).slice(0, 300)).text;
+  const body = redact(textOf(b.body).slice(0, 20000)).text;
   const info = db.prepare('INSERT INTO hd_test_cases (subject, body, expected_sub_key, expected_priority, language, source) VALUES (?, ?, ?, ?, ?, ?)')
-    .run(String(b.subject || '').slice(0, 300), String(b.body).slice(0, 20000), key, b.expected_priority || null, detectLanguage(`${b.subject || ''} ${b.body}`), b.source === 'override' ? 'override' : 'added');
-  audit({ actor: req.me, action: 'test_case_added', newValue: key, detail: String(b.subject || '').slice(0, 120) });
+    .run(subject, body, key, b.expected_priority || null, detectLanguage(`${subject} ${body}`), b.source === 'override' ? 'override' : 'added');
+  audit({ actor: req.me, action: 'test_case_added', newValue: key, detail: subject.slice(0, 120) });
   res.status(201).json(db.prepare('SELECT * FROM hd_test_cases WHERE id = ?').get(info.lastInsertRowid));
 }));
 
 router.delete('/tests/:id', wrap((req, res) => {
-  const r = db.prepare('DELETE FROM hd_test_cases WHERE id = ?').run(Number(req.params.id));
-  if (!r.changes) return res.status(404).json({ error: 'Test email not found' });
+  const id = Number(req.params.id);
+  const row = db.prepare('SELECT subject, expected_sub_key, source FROM hd_test_cases WHERE id = ?').get(id);
+  if (!row) return res.status(404).json({ error: 'Test email not found' });
+  db.prepare('DELETE FROM hd_test_cases WHERE id = ?').run(id);
+  audit({ actor: req.me, action: 'test_case_deleted', oldValue: row.expected_sub_key, detail: `${row.source}: ${String(row.subject || '').slice(0, 120)}` });
   res.json({ ok: true });
 }));
 
@@ -92,18 +103,20 @@ export function parseCsv(text) {
   let row = [];
   let cur = '';
   let q = false;
+  let openRow = 0;
   const src = String(text || '').replace(/^﻿/, '');
   for (let i = 0; i < src.length; i++) {
     const ch = src[i];
     if (q) {
       if (ch === '"') { if (src[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch;
-    } else if (ch === '"') q = true;
+    } else if (ch === '"') { q = true; openRow = rows.length + 1; }
     else if (ch === ',') { row.push(cur); cur = ''; }
     else if (ch === '\n' || ch === '\r') { if (ch === '\r' && src[i + 1] === '\n') i++; row.push(cur); cur = ''; if (row.some((c) => c.trim() !== '')) rows.push(row); row = []; }
     else cur += ch;
   }
   row.push(cur);
   if (row.some((c) => c.trim() !== '')) rows.push(row);
+  rows.unterminatedAt = q ? openRow : 0; // a quotation mark that is never closed swallows the rest of the file
   return rows;
 }
 
@@ -113,34 +126,50 @@ export function parseCsv(text) {
  * Emails the model trains on cannot also measure it, so the split is what keeps the accuracy figure honest.
  */
 router.post('/tests/import', wrap((req, res) => {
-  const mode = ['measure', 'train'].includes(req.body && req.body.mode) ? req.body.mode : 'split';
+  const rawMode = req.body && req.body.mode;
+  const mode = rawMode === undefined || rawMode === null || rawMode === '' ? 'split' : String(rawMode).trim().toLowerCase();
+  if (!['split', 'measure', 'train'].includes(mode)) throw new Error('Unknown mode. Choose "split", "measure" or "train".'); // a typo must not quietly train on half of what was meant to measure
   const rows = parseCsv(req.body && req.body.csv);
+  if (rows.unterminatedAt) throw new Error(`A quotation mark opened near row ${rows.unterminatedAt} is never closed, so the rest of the file would be read as one email. Close it or remove it and try again.`);
   if (rows.length < 2) throw new Error('The file needs a header row and at least one email.');
   const head = rows[0].map((h) => normalize(h).replace(/\s+/g, '_'));
-  const col = (...names) => head.findIndex((h) => names.includes(h));
+  // the first name in each list that the file has wins, so a sender's "email" column can never beat the "body" column
+  const col = (...names) => { for (const n of names) { const i = head.indexOf(n); if (i >= 0) return i; } return -1; };
   const iSubject = col('subject', 'title');
-  const iBody = col('body', 'email', 'text', 'message');
+  const iBody = col('body', 'text', 'message', 'email_body', 'content', 'email');
   const iType = col('expected', 'expected_type', 'request_type', 'type', 'sub_category', 'subcategory', 'category');
   const iPrio = col('priority', 'expected_priority');
   if (iBody < 0 || iType < 0) throw new Error('Columns needed: body (the email text) and expected (the correct request type). Optional: subject, priority.');
   const ins = db.prepare('INSERT INTO hd_test_cases (subject, body, expected_sub_key, expected_priority, language, source) VALUES (?, ?, ?, ?, ?, ?)');
+  const PRIORITIES = ['Critical', 'High', 'Average', 'Low'];
+  const dataRows = rows.slice(1);
+  const truncated = Math.max(0, dataRows.length - 1000);
   let added = 0;
   const errors = [];
+  const warnings = [];
   db.transaction(() => {
-    for (const [n, r] of rows.slice(1, 1001).entries()) {
+    for (const [n, r] of dataRows.slice(0, 1000).entries()) {
       const key = resolveType(r[iType]);
-      const body = String(r[iBody] || '').trim();
+      const body = redact(String(r[iBody] || '').trim()).text; // card numbers, Emirates IDs, IBANs masked, as everywhere else
       if (!body) { errors.push(`Row ${n + 2}: empty email body`); continue; }
       if (!key) { errors.push(`Row ${n + 2}: unknown request type "${String(r[iType] || '').slice(0, 40)}"`); continue; }
-      const prio = iPrio >= 0 ? ['Critical', 'High', 'Average', 'Low'].find((p) => p.toLowerCase() === String(r[iPrio] || '').trim().toLowerCase()) || null : null;
-      const subject = iSubject >= 0 ? String(r[iSubject] || '').slice(0, 300) : '';
+      let prio = null;
+      if (iPrio >= 0) {
+        const raw = String(r[iPrio] || '').trim();
+        if (raw) {
+          prio = PRIORITIES.find((p) => p.toLowerCase() === raw.toLowerCase()) || null;
+          if (!prio) warnings.push(`Row ${n + 2}: priority "${raw.slice(0, 20)}" is not Critical, High, Average or Low, so no priority is checked for this email`);
+        }
+      }
+      const subject = iSubject >= 0 ? redact(String(r[iSubject] || '').slice(0, 300)).text : '';
       const source = mode === 'measure' ? 'imported' : mode === 'train' ? 'imported-train' : (added % 2 === 0 ? 'imported' : 'imported-train');
       ins.run(subject, body.slice(0, 20000), key, prio, detectLanguage(`${subject} ${body}`), source);
       added++;
     }
   })();
-  if (added) audit({ actor: req.me, action: 'test_set_imported', detail: `${added} labelled emails imported (${{ split: 'half to measure, half to train', measure: 'all to measure', train: 'all to train' }[mode]})${errors.length ? `, ${errors.length} skipped` : ''}` });
-  res.json({ added, skipped: errors.length, errors: errors.slice(0, 20), mode });
+  if (truncated) warnings.push(`Only the first 1,000 rows were read; ${truncated} more were not imported. Import them from a second file.`);
+  if (added) audit({ actor: req.me, action: 'test_set_imported', detail: `${added} labelled emails imported (${{ split: 'half to measure, half to train', measure: 'all to measure', train: 'all to train' }[mode]})${errors.length ? `, ${errors.length} skipped` : ''}${truncated ? `, ${truncated} rows past the 1,000 limit not read` : ''}` });
+  res.json({ added, skipped: errors.length, errors: errors.slice(0, 20), warnings: warnings.slice(0, 20), truncated, mode });
 }));
 
 /* ---------------------------------------------------------------- measure it */
@@ -148,7 +177,10 @@ const AI_RUN_LIMIT = 150; // keeps the cost of one AI run predictable
 
 async function inBatches(items, size, fn) {
   const out = [];
-  for (let i = 0; i < items.length; i += size) out.push(...await Promise.all(items.slice(i, i + size).map(fn)));
+  for (let i = 0; i < items.length; i += size) {
+    out.push(...await Promise.all(items.slice(i, i + size).map(fn)));
+    await new Promise((resolve) => setImmediate(resolve)); // other requests are served between batches: a long run must not freeze the server
+  }
   return out;
 }
 
@@ -224,24 +256,28 @@ router.get('/feedback', wrap((req, res) => {
   const since = `-${days} days`;
   const classified = db.prepare("SELECT COUNT(*) n FROM hd_audit WHERE action = 'classified' AND at >= datetime('now', ?)").get(since).n;
   const confirmed = db.prepare("SELECT COUNT(*) n FROM hd_audit WHERE action = 'classification_confirmed' AND at >= datetime('now', ?)").get(since).n;
+  const OVERRIDES = "FROM hd_audit a JOIN hd_cases c ON c.id = a.case_id WHERE a.action = 'override' AND a.at >= datetime('now', ?)";
+  // counted in the database, not from the 200 rows listed below: with more corrections than that the figures were wrong
+  const total = db.prepare(`SELECT COUNT(*) n ${OVERRIDES}`).get(since).n;
+  const byField = Object.fromEntries(db.prepare(`SELECT a.field, COUNT(*) n ${OVERRIDES} GROUP BY a.field`).all(since).map((r) => [r.field, r.n]));
+  // of the emails classified in this period, the share whose type or priority a person changed (each email once, however often it was changed)
+  const corrected = db.prepare(`SELECT COUNT(DISTINCT a.case_id) n FROM hd_audit a WHERE a.action = 'override' AND a.field IN ('sub_key', 'priority') AND a.at >= datetime('now', ?)
+                                  AND a.case_id IN (SELECT case_id FROM hd_audit WHERE action = 'classified' AND at >= datetime('now', ?))`).get(since, since).n;
+  const pairs = db.prepare(`SELECT a.old_value, a.new_value, COUNT(*) n ${OVERRIDES} AND a.field = 'sub_key' GROUP BY a.old_value, a.new_value ORDER BY n DESC, a.old_value LIMIT 8`).all(since);
   const overrides = db.prepare(`SELECT a.id, a.at, a.field, a.old_value, a.new_value, a.detail, a.actor_name, c.id AS case_id, c.case_no, c.subject, c.classified_by, c.confidence, c.matched_terms
-                                  FROM hd_audit a JOIN hd_cases c ON c.id = a.case_id WHERE a.action = 'override' AND a.at >= datetime('now', ?) ORDER BY a.at DESC, a.id DESC LIMIT 200`).all(since);
-  const byField = {};
-  const pairs = {};
+                                  ${OVERRIDES} ORDER BY a.at DESC, a.id DESC LIMIT 200`).all(since);
   const rows = overrides.map((o) => {
-    byField[o.field] = (byField[o.field] || 0) + 1;
     let suggestion = null;
     if (o.field === 'sub_key') {
-      pairs[`${o.old_value}>${o.new_value}`] = (pairs[`${o.old_value}>${o.new_value}`] || 0) + 1;
       const phrase = cleanPhrase(o.subject || '');
       if (phrase.split(' ').length >= 2 && phrase.length <= 60) suggestion = { sub_key: o.new_value, term: phrase };
     }
     return { ...o, matched_terms: (() => { try { return JSON.parse(o.matched_terms || '[]'); } catch { return []; } })(), suggestion };
   });
   res.json({
-    days, classified, confirmed, overrides: overrides.length, by_field: byField,
-    override_rate: pct(overrides.filter((o) => o.field === 'sub_key' || o.field === 'priority').length, classified),
-    confused_pairs: Object.entries(pairs).map(([k, n]) => { const [from, to] = k.split('>'); return { from, to, count: n }; }).sort((a, b) => b.count - a.count).slice(0, 8),
+    days, classified, confirmed, overrides: total, shown: rows.length, by_field: byField,
+    override_rate: pct(corrected, classified),
+    confused_pairs: pairs.map((p) => ({ from: p.old_value, to: p.new_value, count: p.n })),
     data: rows,
   });
 }));

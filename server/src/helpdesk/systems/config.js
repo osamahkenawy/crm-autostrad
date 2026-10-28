@@ -9,6 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import { getSettings } from '../settings.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_CONFIG_PATH = path.resolve(here, '../../../config/customer-systems.json');
@@ -243,14 +244,18 @@ export function loadConfig() {
 /** Forget the parsed file (tests change the file under the same name within one millisecond). */
 export const resetConfigCache = ({ forgetGood = false } = {}) => { cached = null; if (forgetGood) lastGood = null; };
 
-/** 'api' when the customer systems answer, 'crm' when the CRM's own records are used. HELPDESK_ACCOUNT_SOURCE overrides the file. */
+/**
+ * 'api' when the customer systems answer, 'crm' when the CRM's own (demo) records are used, 'none' when nothing is connected.
+ * HELPDESK_ACCOUNT_SOURCE overrides the file. The demo records belong to the demo mailbox: a real mailbox with no customer system connected
+ * gets 'none', so no email from a real customer is ever matched to a made-up customer or contract.
+ */
 export function accountMode() {
   const forced = String(process.env.HELPDESK_ACCOUNT_SOURCE || '').trim().toLowerCase();
-  if (forced === 'crm' || forced === 'api') return forced;
+  if (forced === 'crm' || forced === 'api' || forced === 'none') return forced;
   const c = loadConfig();
-  if (!c.exists) return 'crm';
-  if (!c.ok && !c.usingLastGood) return 'api'; // a file that exists but is broken never quietly becomes the demo records: lookups say why they cannot run
-  return c.config.enabled ? 'api' : 'crm';
+  if (c.exists && !c.ok && !c.usingLastGood) return 'api'; // a file that exists but is broken never quietly becomes the demo records: lookups say why they cannot run
+  if (c.exists && c.config.enabled) return 'api';
+  return getSettings().provider === 'demo' ? 'crm' : 'none';
 }
 
 /** A source with its secrets' environment names resolved: which ones are still missing on the server. */

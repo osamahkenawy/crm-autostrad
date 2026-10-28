@@ -12,7 +12,7 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autostrad-roles-'));
 const PORT = 5200 + Math.floor(Math.random() * 600);
 const base = `http://127.0.0.1:${PORT}/api`;
-const env = { ...process.env, ARC_DB_PATH: path.join(dir, 'test.db'), API_PORT: String(PORT), HELPDESK_SCHEDULER: 'off' };
+const env = { ...process.env, ARC_DB_PATH: path.join(dir, 'test.db'), API_PORT: String(PORT), HELPDESK_SCHEDULER: 'off', ARC_SKIP_ENV_FILE: '1' };
 for (const k of ['ANTHROPIC_API_KEY', 'ANTHROPIC_BASE_URL', 'GRAPH_TENANT_ID', 'GRAPH_CLIENT_ID', 'GRAPH_CLIENT_SECRET', 'HELPDESK_PROVIDER', 'HELPDESK_SEND_MODE', 'HELPDESK_LLM_MODE', 'JWT_SECRET', 'NODE_ENV']) delete env[k];
 const DEMO = 'autostrad123'; // the shared demo password of the seeded accounts (test database only)
 const TEST_PW = 'throwaway-test-value-1';

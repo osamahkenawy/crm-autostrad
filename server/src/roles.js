@@ -4,14 +4,14 @@
 // Five roles:
 //   it                IT, the super admin: runs the system and can do everything
 //   admin             sees everything and can work in all of it, but does not run the system (accounts, mailbox and AI switches)
-//   operations        bookings, trips, fleet, maintenance, fines, branches, customers
+//   operations        bookings, contracts, fleet, maintenance, fines, branches, customers
 //   customer_service  the helpdesk and customers; sees bookings, invoices and fines to answer questions
 //   finance           invoices, fines and money; approves replies to sensitive financial requests
 
 export const ROLES = [
   { key: 'it', label: 'IT (super admin)', blurb: 'Runs the system: user accounts and roles, the mailbox and AI switches, every setting. Can see and do everything.' },
   { key: 'admin', label: 'Admin', blurb: 'Sees everything in the CRM and the helpdesk and can work in all of it. Does not manage user accounts or the mailbox and AI switches.' },
-  { key: 'operations', label: 'Operations', blurb: 'Bookings, trips, fleet, maintenance, fines, branches and customers. Works helpdesk cases.' },
+  { key: 'operations', label: 'Operations', blurb: 'Bookings, contracts, fleet, maintenance, fines, branches and customers. Works helpdesk cases.' },
   { key: 'customer_service', label: 'Customer service', blurb: 'Works the helpdesk and looks after customers. Can see bookings, invoices and fines to answer questions, not change them.' },
   { key: 'finance', label: 'Finance', blurb: 'Invoices, fines and customer money. Approves replies to sensitive financial requests. Works helpdesk cases.' },
 ];
@@ -28,7 +28,7 @@ const row = (it, admin, operations, customer_service, finance) => ({ it, admin, 
 export const ACCESS = {
   dashboard:   row(V, V, V, N, V),
   bookings:    row(E, E, E, V, V),
-  trips:       row(E, E, E, V, V),
+  contracts:   row(E, E, E, V, V),
   vehicles:    row(E, E, E, N, V),     // the fleet
   maintenance: row(E, E, E, N, V),
   fines:       row(E, E, E, V, E),
@@ -81,7 +81,7 @@ export function guide() {
   return {
     roles: ROLES,
     areas: [
-      area('dashboard', 'CRM dashboard (revenue, fleet, KPIs)'), area('bookings', 'Bookings'), area('trips', 'Trips'), area('vehicles', 'Fleet'), area('maintenance', 'Maintenance'),
+      area('dashboard', 'CRM dashboard (revenue, fleet, KPIs)'), area('bookings', 'Bookings'), area('contracts', 'Contracts'), area('vehicles', 'Fleet'), area('maintenance', 'Maintenance'),
       area('fines', 'Fines and Salik'), area('customers', 'Customers'), area('leads', 'Corporate leads'), area('activities', 'Tasks'), area('invoices', 'Invoices'),
       area('branches', 'Branches'), area('team', 'Team accounts and roles'), area('settings', 'Company settings'),
       hd('view', 'Helpdesk: dashboard, cases and reports'), hd('work', 'Helpdesk: reply, close and work cases'), hd('approve_sensitive', 'Helpdesk: approve replies to sensitive financial requests'),

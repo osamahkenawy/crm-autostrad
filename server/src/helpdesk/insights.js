@@ -1,6 +1,8 @@
 // "What to look at": facts from the CRM and the case history that explain the request or point to the next step.
 // Everything here is read-only and comes with the evidence, so a person can check it before acting on it.
 import { getSettings } from './settings.js';
+import { NOT_CONNECTED } from './systems/account.js';
+import { accountMode } from './systems/config.js';
 
 const money = (n) => `AED ${Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
 const ms = (s) => (s ? new Date(String(s).length === 10 ? `${s}T00:00:00Z` : `${String(s).replace(' ', 'T')}Z`).getTime() : NaN);
@@ -42,7 +44,10 @@ export function buildInsights(c, contract, related = [], acct = null) {
   if (!contract) {
     const hint = others.length ? ` The sender has ${others.length} other contract${others.length > 1 ? 's' : ''}: if one of them is the right one, choose it under "Other contracts".` : '';
     // when the systems did not answer at all that is already said above: "not found" would be untrue
-    if (!acct || acct.status !== 'unavailable') {
+    if (accountMode() === 'none') {
+      // nothing is connected: nothing was looked up, so "no contract found" and "no recent rental" would be untrue
+      add('info', 'Contract details are not available', `${NOT_CONNECTED} ${c.contract_no ? `The email names ${c.contract_no}: check it by hand.` : 'The email names no contract: ask the customer for it if the answer depends on it.'}`);
+    } else if (!acct || acct.status !== 'unavailable') {
       add('warn', 'No contract found', `${c.contract_no ? `${c.contract_no} is not in ${place}. Ask the customer to check the number.` : 'The email has no contract number and the sender has no recent rental. Ask the customer for it.'}${hint}`);
     }
   } else if (c.contract_inferred) {

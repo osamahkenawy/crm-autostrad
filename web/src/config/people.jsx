@@ -33,7 +33,7 @@ export const customers = {
     { key: 'phone', label: 'Phone', render: (r) => <span className="nowrap">{r.phone}</span> },
     { key: 'tier', label: 'Tier', sortable: true, render: (r) => <div className="col" style={{ gap: 5, alignItems: 'flex-start' }}><StatusPill kind="tier" value={r.tier} /><span className="cell-sub">{r.segment}</span></div>, export: (r) => `${r.tier} (${r.segment})` },
     { key: 'verification_status', label: 'Verification', sortable: true, render: (r) => <StatusPill kind="kyc" value={r.verification_status} />, export: (r) => r.verification_status },
-    { key: 'trips_count', label: 'Trips', align: 'right', sortable: true, render: (r) => num(r.trips_count) },
+    { key: 'trips_count', label: 'Contracts', align: 'right', sortable: true, render: (r) => num(r.trips_count) },
     { key: 'lifetime_value', label: 'Lifetime value', align: 'right', sortable: true, render: (r) => moneyShort(r.lifetime_value), export: (r) => r.lifetime_value },
     { key: 'wallet_balance', label: 'Wallet', align: 'right', sortable: true, render: (r) => money(r.wallet_balance), export: (r) => r.wallet_balance },
     { key: 'join_date', label: 'Joined', sortable: true, render: (r) => fmtDate(r.join_date), export: (r) => r.join_date },
@@ -52,7 +52,7 @@ export const customers = {
   highlights: (r) => (
     <MiniStats items={[
       { label: 'Lifetime value', value: moneyShort(r.lifetime_value) },
-      { label: 'Trips', value: num(r.trips_count) },
+      { label: 'Contracts', value: num(r.trips_count) },
       { label: 'Wallet', value: money(r.wallet_balance) },
     ]} />
   ),

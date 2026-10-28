@@ -12,7 +12,7 @@ import { accountMode, loadConfig, sourceRuntime } from './systems/config.js';
 import { systemsStatus, testLookup } from './systems/status.js';
 import { can } from '../roles.js';
 import { dashboard } from './metrics.js';
-import { invalidateDictionary } from './knowledge.js';
+import { checkKeyword, invalidateDictionary } from './knowledge.js';
 import { getProvider, lastSync, syncMailbox } from './mail/index.js';
 import { queueCustomerReply, queueNewEmails, queueSampleEmail } from './mail/demo.js';
 import { modelInfo } from './learner.js';
@@ -69,7 +69,8 @@ helpdeskRouter.get('/meta', wrap((_req, res) => res.json({
   subcategories: SUBCATEGORIES.map(({ key, name, category, impact, department, sensitive, top5 }) => ({ key, name, category, impact, department, sensitive: Boolean(sensitive), top5: Boolean(top5) })),
   departments: DEPARTMENTS, closure_reasons: CLOSURE_REASONS, template_variables: TEMPLATE_VARIABLES,
   send_mode: getSettings().send_mode, provider: getSettings().provider, sla_hours: getSettings().sla_hours, sensitive_approver_roles: SENSITIVE_APPROVER_ROLES,
-  people: db.prepare("SELECT id, name, role, department FROM users WHERE status = 'active' ORDER BY name").all(),
+  // only people who work in a support team can own a case: a person with no team is not offered
+  people: db.prepare("SELECT id, name, role, department FROM users WHERE status = 'active' AND COALESCE(department, '') <> '' ORDER BY name").all(),
 })));
 
 /* ---------------------------------------------------------------- cases */
@@ -166,6 +167,7 @@ helpdeskRouter.post('/samples/send', wrap(async (req, res) => {
 /** The readiness line for the contract, customer and invoice systems. */
 function customerData() {
   const base = { key: 'customer_data', title: 'Connect the contract, customer and invoice systems', link: '/helpdesk/setup?tab=customer' };
+  if (accountMode() === 'none') return { ...base, state: 'todo', detail: 'Not connected yet: real emails are not looked up anywhere, so each case says that customer details are not available and replies leave out account figures. Connect Orion Fleet and the CNR Portal when their APIs are ready.' };
   if (accountMode() !== 'api') return { ...base, state: 'todo', detail: "Replies and the case screen use the CRM's own demo records. Connect Orion Fleet and the CNR Portal (or whichever systems hold the real contracts, customers and invoices) so they use the real ones." };
   const cfg = loadConfig();
   if (!cfg.exists || !cfg.ok) return { ...base, state: 'todo', detail: cfg.exists ? `The configuration needs fixing: ${cfg.problems[0]}` : 'The customer systems are switched on but the configuration file is missing.' };
@@ -316,7 +318,12 @@ helpdeskRouter.use('/keywords', ...guarded, crudRouter({
   columns: ['sub_key', 'language', 'term', 'weight', 'kind', 'active'],
   searchable: ['t.term', 't.sub_key'],
   orderBy: 't.sub_key ASC, t.weight DESC, t.term ASC',
-  beforeWrite: (body, op, _raw, req) => { if (op === 'create') body.source = `added by ${req.me.name}`; return body; },
+  beforeWrite: (body, op, _raw, req) => {
+    const prev = op === 'update' ? db.prepare('SELECT * FROM hd_keywords WHERE id = ?').get(req.params.id) : null;
+    body = checkKeyword(body, prev); // refuses an unknown request type, a weight that is not 1 to 5, an unsafe pattern
+    if (op === 'create') body.source = `added by ${req.me.name}`;
+    return body;
+  },
   afterWrite: (row, _op, _prev, req) => { invalidateDictionary(); audit({ actor: req.me, action: 'keyword_changed', field: row.sub_key, newValue: row.term, detail: `weight ${row.weight}, ${row.language}${row.active ? '' : ', inactive'}` }); },
   afterDelete: (prev, req) => { invalidateDictionary(); audit({ actor: req.me, action: 'keyword_deleted', field: prev.sub_key, oldValue: prev.term }); },
 }));

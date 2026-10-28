@@ -37,29 +37,39 @@ export function detectLanguage(text) {
 /** Which language to reply in. */
 export const replyLanguage = (text) => (detectLanguage(text) === 'en' ? 'en' : (detectLanguage(text) === 'ar' ? 'ar' : ((String(text).match(AR) || []).length > 25 ? 'ar' : 'en')));
 
+// Every pattern is anchored to a line start, and the blanks around it are `[^\S\r\n]` (any whitespace except a line break), never `\s`:
+// `^\s*` runs on through the blank lines that follow, so an email of nothing but blank lines took time quadratic in its length
+// (20,000 blank lines 1.6 s, 160,000 about 90 s) on every one of the several times the pipeline strips a message.
 const QUOTE_START = [
-  /^\s*On .{5,160}wrote:\s*$/im,
-  /^\s*-{2,}\s*Original Message\s*-{2,}/im,
-  /^\s*From:\s.+\r?\n\s*(?:Sent|Date):\s/im,
-  /^\s*_{5,}\s*$/m,
-  /^\s*Sent from my (?:iPhone|iPad|Android|Samsung|mobile)/im,
-  /^\s*Get Outlook for /im,
-  /^\s*(?:في|بتاريخ).{5,120}كتب.{0,60}:\s*$/m,
-  /^\s*-{2,}\s*(?:الرسالة الأصلية|رسالة أصلية)\s*-{2,}/m,
-  /^\s*(?:This|The) (?:e-?mail|message) (?:and any attachments )?(?:is|are) confidential/im,
-  /^\s*DISCLAIMER\b/m,
+  /^[^\S\r\n]*On .{5,160}wrote:[^\S\r\n]*$/im,
+  /^[^\S\r\n]*-{2,}[^\S\r\n]*Original Message[^\S\r\n]*-{2,}/im,
+  /^[^\S\r\n]*From:[^\S\r\n].+\r?\n[^\S\r\n]*(?:Sent|Date):[^\S\r\n]/im,
+  /^[^\S\r\n]*_{5,}[^\S\r\n]*$/m,
+  /^[^\S\r\n]*Sent from my (?:iPhone|iPad|Android|Samsung|mobile)/im,
+  /^[^\S\r\n]*Get Outlook for /im,
+  /^[^\S\r\n]*(?:في|بتاريخ).{5,120}كتب.{0,60}:[^\S\r\n]*$/m,
+  /^[^\S\r\n]*-{2,}[^\S\r\n]*(?:الرسالة الأصلية|رسالة أصلية)[^\S\r\n]*-{2,}/m,
+  /^[^\S\r\n]*(?:This|The) (?:e-?mail|message) (?:and any attachments )?(?:is|are) confidential/im,
+  /^[^\S\r\n]*DISCLAIMER\b/m,
 ];
+const MAX_STRIP_INPUT = 100000; // what the customer wrote is at the top; nothing below this is read
+let lastIn = null;
+let lastOut = '';
 
 /** The part of an email the customer actually wrote in this message (no quoted history or boilerplate). */
 export function stripQuoted(text) {
-  let t = String(text || '').replace(/\r\n/g, '\n');
+  const raw = String(text || '');
+  if (raw === lastIn) return lastOut; // the pipeline asks about the same message several times in a row
+  let t = raw.slice(0, MAX_STRIP_INPUT).replace(/\r\n/g, '\n');
   let cut = t.length;
   for (const re of QUOTE_START) {
     const m = re.exec(t);
     if (m && m.index < cut) cut = m.index;
   }
   t = t.slice(0, cut).split('\n').filter((l) => !/^\s*>/.test(l)).join('\n');
-  return t.replace(/\n{3,}/g, '\n\n').trim().slice(0, 8000);
+  lastOut = t.replace(/\n{3,}/g, '\n\n').trim().slice(0, 8000);
+  lastIn = raw;
+  return lastOut;
 }
 
 const luhn = (digits) => {

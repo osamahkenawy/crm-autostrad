@@ -506,6 +506,8 @@ a.tile:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(23, 67, 1
   .hero h1 { font-size: 24px; }
   .drawer { width: 100vw; }
   .toolbar .select { min-width: 0; flex: 1; }
+  .card-head { flex-wrap: wrap; }              /* a long action (a dropdown, three buttons) drops under the title instead of squeezing it or sticking out */
+  .card-head .select { max-width: 100%; min-width: 0; }
 }
 
 /* ---------- drawer highlights ---------- */

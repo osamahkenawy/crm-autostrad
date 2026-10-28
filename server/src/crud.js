@@ -10,7 +10,7 @@ function friendly(e) {
   let x;
   if ((x = m.match(/UNIQUE constraint failed: \w+\.(\w+)/))) return `Another record already uses this ${x[1].replace(/_/g, ' ')}.`;
   if ((x = m.match(/NOT NULL constraint failed: \w+\.(\w+)/))) return `${x[1].replace(/_/g, ' ')} is required.`;
-  if (/FOREIGN KEY constraint failed/.test(m)) return 'This record is linked to other records (bookings, invoices, trips…) so it cannot be removed or pointed at a missing record.';
+  if (/FOREIGN KEY constraint failed/.test(m)) return 'This record is linked to other records (bookings, invoices, contracts…) so it cannot be removed or pointed at a missing record.';
   return m;
 }
 

@@ -15,7 +15,7 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autostrad-hd-systems-api-'));
 const PORT = 4900 + Math.floor(Math.random() * 500);
 const base = `http://127.0.0.1:${PORT}/api`;
 const KEY = 'api-test-key';
-const env = { ...process.env, ARC_DB_PATH: path.join(dir, 'test.db'), API_PORT: String(PORT), HELPDESK_SCHEDULER: 'off' };
+const env = { ...process.env, ARC_DB_PATH: path.join(dir, 'test.db'), API_PORT: String(PORT), HELPDESK_SCHEDULER: 'off', ARC_SKIP_ENV_FILE: '1' };
 for (const k of Object.keys(env)) if (/^(ANTHROPIC_|GRAPH_|HELPDESK_(?!SCHEDULER)|ORION_|CNR_|CUSTOMER_)/.test(k)) delete env[k];
 
 let server;

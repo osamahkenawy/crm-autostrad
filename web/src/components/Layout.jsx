@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   AlertTriangle, Bell, BadgeCheck, Building2, CalendarCheck, Car, ChevronRight, FileBarChart, FileWarning, FlaskConical, Headset, Inbox, LayoutDashboard, ListChecks, LogOut, Menu,
-  PanelLeftClose, PanelLeftOpen, Receipt, Route, Settings, ShieldAlert, SlidersHorizontal, Target, UserCog, Users, Wrench, Clock, MessageSquareReply,
+  PanelLeftClose, PanelLeftOpen, Receipt, FileSignature, Settings, ShieldAlert, SlidersHorizontal, Target, UserCog, Users, Wrench, Clock, MessageSquareReply,
 } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
@@ -17,7 +17,7 @@ const NAV = [
     label: 'Operations',
     items: [
       { to: '/bookings', label: 'Bookings', icon: CalendarCheck, cap: 'bookings.view' },
-      { to: '/trips', label: 'Trips', icon: Route, badge: (s) => s.kpis.liveTrips, cap: 'trips.view' },
+      { to: '/contracts', label: 'Contracts', icon: FileSignature, badge: (s) => s.kpis.openContracts, cap: 'contracts.view' },
       { to: '/fleet', label: 'Fleet', icon: Car, cap: 'vehicles.view' },
       { to: '/maintenance', label: 'Maintenance', icon: Wrench, cap: 'maintenance.view' },
       { to: '/fines', label: 'Fines & Salik', icon: ShieldAlert, badge: (s) => s.kpis.finesOpenCount, cap: 'fines.view' },

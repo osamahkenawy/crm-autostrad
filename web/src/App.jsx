@@ -11,7 +11,13 @@ import Cases from './helpdesk/Cases';
 import Reports from './helpdesk/Reports';
 import Lab from './helpdesk/Lab';
 import HelpdeskSetup from './helpdesk/Setup';
-import { Bookings, Branches, Customers, Fines, Fleet, Invoices, Leads, Maintenance, Tasks, Team, Trips } from './pages/resources';
+import { Bookings, Branches, Contracts, Customers, Fines, Fleet, Invoices, Leads, Maintenance, Tasks, Team } from './pages/resources';
+
+// the old address /trips (a bookmark, a link) leads to /contracts, filters included
+function TripsRedirect() {
+  const { search } = useLocation();
+  return <Navigate to={`/contracts${search}`} replace />;
+}
 
 function Splash() {
   return <div className="spinner-page"><img src="/brand/mark.png" alt="Loading" /></div>;
@@ -51,7 +57,8 @@ export default function App() {
       <Route element={<RequireAuth><Layout /></RequireAuth>}>
         <Route index element={<Landing />} />
         <Route path="bookings" element={<Gate cap="bookings.view"><Bookings /></Gate>} />
-        <Route path="trips" element={<Gate cap="trips.view"><Trips /></Gate>} />
+        <Route path="contracts" element={<Gate cap="contracts.view"><Contracts /></Gate>} />
+        <Route path="trips" element={<TripsRedirect />} />
         <Route path="fleet" element={<Gate cap="vehicles.view"><Fleet /></Gate>} />
         <Route path="maintenance" element={<Gate cap="maintenance.view"><Maintenance /></Gate>} />
         <Route path="fines" element={<Gate cap="fines.view"><Fines /></Gate>} />

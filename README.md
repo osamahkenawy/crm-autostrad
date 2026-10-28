@@ -1,6 +1,6 @@
 # Autostrad CRM
 
-Fleet and customer relationship management for **Autostrad Rent a Car** (UAE): bookings, live trips, fleet,
+Fleet and customer relationship management for **Autostrad Rent a Car** (UAE): bookings, contracts, fleet,
 customers (with document verification), corporate leads, invoices with 5% VAT, fines and Salik, maintenance,
 branches and team. Branded from the Figma file *Autostrad Car Share — Mobile App*
 (`9OvuTxvJoe0J9SD8LOZMrj`, node `47-1205`).
@@ -26,7 +26,7 @@ Open **http://localhost:5173**. All 15 seeded accounts share the password `autos
 |---|---|---|
 | **IT (super admin)** | `it@autostrad.ae` | Runs the system: user accounts and roles, the helpdesk mailbox and AI switches, every setting. Can do everything |
 | **Admin** | `admin@autostrad.ae` | Sees everything in the CRM and the helpdesk and can work in all of it. Does not manage accounts or the mailbox and AI switches |
-| **Operations** | `khalid@autostrad.ae` (also `rania`, `omar.d`, `samir`, `yousef`, `hassan`) | Bookings, trips, fleet, maintenance, fines, branches, customers; works helpdesk cases |
+| **Operations** | `khalid@autostrad.ae` (also `rania`, `omar.d`, `samir`, `yousef`, `hassan`) | Bookings, contracts, fleet, maintenance, fines, branches, customers; works helpdesk cases |
 | **Customer service** | `noor@autostrad.ae` (also `leena`, `dana`, `fatima`) | The helpdesk and customers; sees bookings, invoices and fines to answer questions, not change them. Lands on the helpdesk |
 | **Finance** | `mariam@autostrad.ae` (also `ahmed`, `zainab`) | Invoices, fines, customer money; approves replies to sensitive financial requests; works helpdesk cases |
 
@@ -35,7 +35,7 @@ The full table of who can see and change what is in **Team and roles, "Who can d
 Each person also has a **support team** (Customer Happiness, Accounts, Branch, Operations, Management) that decides which helpdesk cases are routed to them.
 
 `npm run seed` regenerates the demo data (**destructive**). The seed is relative to today, so run it again
-whenever you want fresh dates, including five live car-share trips. In dev, the login page offers a
+whenever you want fresh dates, including five open contracts. In dev, the login page offers a
 "fill in the demo login" shortcut (hidden in production builds).
 
 Ports: the API listens on `API_PORT` (default **4000**), deliberately not on the generic `PORT`, so a dev runner
@@ -51,9 +51,9 @@ that sets `PORT` for the web app can never move the API. Vite uses 5173 and prox
 | Screen | Highlights |
 |---|---|
 | **Dashboard** | Gulf-time greeting, 8 KPI tiles that link to the filtered list, revenue trend, fleet status, revenue by product, category and branch, vehicles on the road now, latest bookings, expiring documents, lead pipeline. |
-| **Bookings** | Status tabs with live counts, filters, price calculated from vehicle rate and period (+5% VAT), mark paid, cancel (refund flag), related trips / invoices / fines. |
-| **Trips** | Live and completed drives. **End trip** closes it and frees the vehicle. |
-| **Fleet** | Table or cards, fuel / charge bars, insurance and registration expiry warnings, send to workshop / mark available. |
+| **Bookings** | Status tabs with live counts, filters, price calculated from vehicle rate and period (+5% VAT), mark paid, cancel (refund flag), related contract / invoices / fines. |
+| **Contracts** | Rental contracts, open while the car is with the customer and closed on return. **Close contract** frees the vehicle. **Demo data until the Orion Fleet API is connected.** |
+| **Fleet** | Table or cards, fuel / charge bars, insurance and registration expiry warnings, send to workshop / mark available. **Demo data until the Orion Fleet API is connected.** |
 | **Maintenance** | A job in progress puts the vehicle in the workshop; completing it releases the vehicle. |
 | **Fines & Salik** | Pick a booking and the vehicle and customer fill in; admin fee defaults (AED 50 fine / 0 toll); mark recovered or disputed. |
 | **Customers** | Verification queue (verify / reject), tier and segment, licence expiry warning, related bookings, invoices and fines. |
@@ -148,7 +148,7 @@ Form field types: `text email tel number date datetime select relation textarea 
 | `vehicles` | plate, make, model, year, category, transmission, fuel_type, color, branch_id, **status** (`available\|on_trip\|reserved\|maintenance`), odometer, fuel_level, daily_rate, monthly_rate, carshare_rate, next_service_km, insurance_expiry, registration_expiry, vin |
 | `customers` | name, phone, email, nationality, emirates_id, license_no, license_expiry, **verification_status** (`verified\|pending\|rejected`), tier (`Standard\|Silver\|Gold\|Platinum`), segment (`Individual\|Corporate`), wallet_balance, trips_count, lifetime_value, join_date, notes, status |
 | `bookings` | ref (`AST-1000xx`, auto), customer_id, vehicle_id, **product_line** (`Daily\|Flexi Monthly\|Car Share\|Corporate Lease`), pickup_branch_id, dropoff_branch_id, start_at, end_at, **status** (`upcoming\|active\|completed\|cancelled`), base_amount, extras_amount, vat_amount, total_amount, payment_status (`paid\|unpaid\|refunded`), payment_method, source |
-| `trips` | booking_id, customer_id, vehicle_id, started_at, ended_at, distance_km, duration_min, start_fuel, end_fuel, fare, rating, **status** (`live\|completed`) |
+| `trips` (shown as **Contracts**) | booking_id, customer_id, vehicle_id, started_at, ended_at, distance_km, duration_min, start_fuel, end_fuel, fare, rating, **status** (`live\|completed`) |
 | `invoices` | number (`INV-2026-00xx`, auto), customer_id, booking_id, issue_date, due_date, subtotal, vat, total, **status** (`paid\|sent\|overdue\|draft`), method, paid_at |
 | `leads` | company, contact_name, email, phone, source, **stage** (`New\|Qualified\|Proposal\|Negotiation\|Won\|Lost`), fleet_size, est_value, owner_id, next_action, next_action_date, notes |
 | `maintenance` | vehicle_id, type, description, scheduled_date, completed_date, odometer, cost, vendor, status (`scheduled\|in_progress\|completed`) |
@@ -156,7 +156,7 @@ Form field types: `text email tel number date datetime select relation textarea 
 | `activities` | type, subject, related_type, related_id, user_id, due_at, done |
 | `settings` | key/value (company_name, company_name_ar, tagline, trn, vat_rate, currency, default_branch, fine_admin_fee, salik_admin_fee, support_email, support_phone) |
 
-Seeded: 8 branches, 10 users, 54 vehicles, 68 customers, 185 bookings, 165 trips (5 live), 160 invoices, 20 leads, 34 maintenance jobs, 46 fines.
+Seeded: 8 branches, 10 users, 54 vehicles, 68 customers, 185 bookings, 165 contracts (5 open), 160 invoices, 20 leads, 34 maintenance jobs, 46 fines.
 Timestamps are stored in UTC (`YYYY-MM-DD HH:MM:SS`); the app shows and edits them in Gulf time (UTC+4).
 
 ---
@@ -169,7 +169,7 @@ Base `/api`. Everything except `POST /auth/login` and `GET /health` needs `Autho
 POST /auth/login {email,password} -> {token, user}      GET /auth/me (user + role label + abilities)      GET /auth/roles (who can do what)      GET /health
 ```
 
-Resources `branches vehicles customers bookings trips invoices leads maintenance fines team activities` share one contract:
+Resources `branches vehicles customers bookings contracts invoices leads maintenance fines team activities` share one contract:
 
 ```
 GET    /:resource?q=&<anyColumn>=&sort=&dir=asc|desc&limit=&offset=   -> { data, total }
@@ -180,7 +180,7 @@ GET    /:resource/:id          POST /:resource          PUT /:resource/:id      
 * Lists are pre-joined with display names (`customer_name`, `vehicle_name`, `plate`, `branch_name`, `owner_name`, …).
 * Errors come back as `{ error }` with a readable message (duplicate plate, missing field, record in use…).
 * `POST /bookings` and `POST /invoices` generate the reference / number when empty.
-* Trips and maintenance keep the vehicle's status in step: a live trip means `on_trip`, an in-progress job means `maintenance`;
+* Contracts and maintenance keep the vehicle's status in step: an open contract means `on_trip` (shown as On rent), an in-progress job means `maintenance`;
   ending or completing them releases the vehicle.
 * `POST /team` needs a `password` (min 8 chars); `PUT /team/:id` changes it only when one is sent.
 
@@ -201,7 +201,7 @@ The helpdesk lives under `/api/helpdesk/*` (cases, drafts, dashboard, reports, m
 * **DB path** is `server/data/autostrad.db` (override with `ARC_DB_PATH`). WAL is attempted and silently falls back on filesystems that refuse it.
 * `JWT_SECRET` defaults to a development value. Set it, restrict CORS and add server-side role checks before any real deployment.
 * The seed is destructive and relative to the current date; the PRNG seed is fixed, so the demo data is reproducible apart from the dates.
-* Vehicle status is driven by trips and maintenance (see above). Keep that rule if you add new ways to change them.
+* Vehicle status is driven by contracts and maintenance (see above). Keep that rule if you add new ways to change them.
 * `server/.env` (copy `server/.env.example`) is read at start-up by `src/env.js` (needs Node 20.12+). The Outlook and AI credentials live there and nowhere else; real environment variables win over the file.
 * The API restarts on every server file change under `npm run dev` (`node --watch`), which also restarts the helpdesk's background scheduler.
 * `npm --prefix server test` runs the helpdesk tests (NLP, API end to end on a throw-away database, mock Microsoft Graph and mock Anthropic servers). None of them touch the real services.

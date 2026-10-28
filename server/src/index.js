@@ -9,6 +9,7 @@ import { ROLE_KEYS, can, capsFor, guide, roleLabel } from './roles.js';
 import { statsRouter } from './routes/stats.js';
 import { helpdeskRouter } from './helpdesk/routes.js';
 import { seedTestSet } from './helpdesk/lab.js';
+import { getSettings } from './helpdesk/settings.js';
 import { seedDefaultRouting } from './helpdesk/routing.js';
 import { startScheduler } from './helpdesk/scheduler.js';
 import { seedDefaultKeywords, seedDefaultTemplates } from './helpdesk/templates.js';
@@ -27,16 +28,16 @@ migrate();
 seedDefaultKeywords();
 seedDefaultTemplates();
 seedDefaultRouting();
-seedTestSet();
+if (getSettings().provider === 'demo') seedTestSet(); // sample emails are made up: a real mailbox starts without them (AI lab, Restore samples, adds them when wanted)
 
-/* ------------------- vehicle status follows trips & workshop -------------------
- * A vehicle goes on_trip while a trip is live and back to available when the last
- * live trip ends; likewise maintenance while a job is in progress. Other statuses
- * (available / reserved) are left to the team. */
+/* ------------------- vehicle status follows contracts & workshop -------------------
+ * A vehicle goes on_trip (shown as "On rent") while a contract is open and back to available when the last
+ * open contract is closed; likewise maintenance while a job is in progress. Other statuses
+ * (available / reserved) are left to the team. (The table is still called trips: only the names people see changed.) */
 const vehicleStatus = (id) => (db.prepare('SELECT status FROM vehicles WHERE id = ?').get(id) || {}).status;
 const setVehicleStatus = (id, status) => db.prepare('UPDATE vehicles SET status = ? WHERE id = ?').run(status, id);
 
-function syncAfterTrip(vehicleId) {
+function syncAfterContract(vehicleId) {
   if (!vehicleId) return;
   const live = db.prepare("SELECT 1 FROM trips WHERE vehicle_id = ? AND status = 'live' LIMIT 1").get(vehicleId);
   if (live) setVehicleStatus(vehicleId, 'on_trip');
@@ -166,7 +167,7 @@ api.use('/bookings', guard('bookings'), crudRouter({
   },
 }));
 
-api.use('/trips', guard('trips'), crudRouter({
+api.use('/contracts', guard('contracts'), crudRouter({
   table: 'trips',
   columns: ['booking_id', 'customer_id', 'vehicle_id', 'started_at', 'ended_at', 'distance_km',
     'duration_min', 'start_fuel', 'end_fuel', 'fare', 'rating', 'status'],
@@ -179,10 +180,10 @@ api.use('/trips', guard('trips'), crudRouter({
     LEFT JOIN bookings b ON b.id = t.booking_id`,
   orderBy: 't.started_at DESC',
   afterWrite: (row, _op, prev) => {
-    syncAfterTrip(row.vehicle_id);
-    if (prev && prev.vehicle_id !== row.vehicle_id) syncAfterTrip(prev.vehicle_id);
+    syncAfterContract(row.vehicle_id);
+    if (prev && prev.vehicle_id !== row.vehicle_id) syncAfterContract(prev.vehicle_id);
   },
-  afterDelete: (prev) => syncAfterTrip(prev.vehicle_id),
+  afterDelete: (prev) => syncAfterContract(prev.vehicle_id),
 }));
 
 api.use('/invoices', guard('invoices'), crudRouter({
@@ -295,6 +296,12 @@ api.put('/settings', guard('settings'), (req, res) => {
 app.use('/api', api);
 
 app.use((err, _req, res, _next) => {
+  // a client's mistake (malformed JSON, a body over the limit, an address that cannot be decoded) is a 4xx, not a server fault
+  const status = Number(err.status || err.statusCode) || (err instanceof URIError ? 400 : 500);
+  if (status >= 400 && status < 500) {
+    const message = err.type === 'entity.parse.failed' ? 'The request body is not valid JSON.' : err.type === 'entity.too.large' ? 'That request is too large (limit 2 MB).' : err instanceof URIError ? 'That address cannot be read.' : (err.expose && err.message) || 'Bad request';
+    return res.status(status).json({ error: message });
+  }
   console.error(err);
   res.status(500).json({ error: err.message || 'Server error' });
 });

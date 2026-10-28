@@ -7,7 +7,7 @@ import { buildInsights } from './insights.js';
 import { similarCases } from './learner.js';
 import { addHours, branchForLocation, dueAtFor, nowUtc, pickOwner, routeFor } from './routing.js';
 import { getSettings } from './settings.js';
-import { accountView } from './systems/account.js';
+import { NOT_CONNECTED, accountView } from './systems/account.js';
 import { accountMode } from './systems/config.js';
 import { ACTIVE_STATUSES, CATEGORIES, CLOSURE_REASONS, DEPARTMENTS, PRIORITIES, SUB_BY_KEY, WORKING_STATUSES } from './taxonomy.js';
 import { normalize, redact } from './text.js';
@@ -140,7 +140,7 @@ export function getCaseDetail(id, user = null) {
 
 /** What the case screen needs to know about where the contract, customer and invoices came from (the contract itself is sent as `contract`). */
 function accountForScreen(acct) {
-  if (!acct) return { source: accountMode(), status: 'not_checked', identity: 'none', systems: [], customer: null, other_contracts: [], errors: [], notes: [], will_retry: false, stale: false };
+  if (!acct) return { source: accountMode(), status: 'not_checked', identity: 'none', systems: [], customer: null, other_contracts: [], errors: [], notes: accountMode() === 'none' ? [NOT_CONNECTED] : [], will_retry: false, stale: false };
   const s = acct.snapshot;
   const by = acct.verified_by ? db.prepare('SELECT name FROM users WHERE id = ?').get(acct.verified_by) : null;
   return {

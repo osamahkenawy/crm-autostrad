@@ -44,12 +44,12 @@ Measured in the AI lab on **68 made-up emails the model was never trained on**, 
 | | Right |
 |---|---|
 | Keyword rules alone | 66% (45 of 68) |
-| **Rules plus learned model (the default)** | **84% (57 of 68)** |
+| **Rules plus learned model (the default)** | **87% (59 of 68)** |
 | Rules, model and Claude | not measured: needs an API key |
 
-With the default 60% threshold, **about 7 in 10 emails go straight through, and about 96% of those are right** (47 of 49); the rest go to the **To check** queue for a person. The errors it makes are mostly one-line or ambiguous emails ("Re: Your invoice") and emails that touch two topics, which is exactly where the optional Claude layer helps.
+With the default 60% threshold, **about 8 in 10 emails go straight through, and about 94% of those are right** (51 of 54); the rest go to the **To check** queue for a person. The errors it makes are mostly one-line or ambiguous emails ("Re: Your invoice") and emails that touch two topics, which is exactly where the optional Claude layer helps.
 
-How the figure moved, for the record: first run 65% (rules) and 81% (smart). Afterwards a handful of generic spam and automatic-reply phrases were added to the keyword list and a second set of 85 independent emails (used to check the confidence scores) was added to the training samples. The 68 were never trained on, but one spam phrase was added after seeing a miss there, so treat the figure as slightly optimistic.
+How the figure moved, for the record: first run 65% (rules) and 81% (smart). Afterwards a handful of generic spam and automatic-reply phrases were added to the keyword list and a second set of 85 independent emails (used to check the confidence scores) was added to the training samples. The 68 were never trained on, but one spam phrase was added after seeing a miss there, so treat the figure as slightly optimistic. Later, an independent review of the AI lab found a weighting bug in the learned model's letter-group features (it made the model weak against typos); fixing it moved the smart engine from 84% (57 of 68) to 87% (59 of 68), and with 30% of the words in each email damaged by typos from 52 to 55 right (of 68) to 54 to 59. The fix was measured on those same 68, so this figure is slightly optimistic too.
 
 These are made-up emails, not Autostrad's. **Import real emails that staff have already classified** (AI lab ▸ Test set ▸ Import CSV; by default half measure the model and half teach it, because emails it learns from cannot also measure it fairly) to get the real figure; the same screen shows where it is wrong and lets staff teach it. The model improves as staff correct cases.
 

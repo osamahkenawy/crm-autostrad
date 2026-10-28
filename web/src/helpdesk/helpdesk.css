@@ -12,8 +12,9 @@
 .hd-grid.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .hd-grid.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .hd-grid.c21 { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
-@media (max-width: 1100px) { .hd-grid.c3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hd-grid.c21 { grid-template-columns: 1fr; } }
-@media (max-width: 760px) { .hd-grid.c2, .hd-grid.c3 { grid-template-columns: 1fr; } }
+/* one column is minmax(0, 1fr), not 1fr: a plain 1fr will not shrink below its content and pushes a 360 px phone screen 8 px wide */
+@media (max-width: 1100px) { .hd-grid.c3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hd-grid.c21 { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .hd-grid.c2, .hd-grid.c3 { grid-template-columns: minmax(0, 1fr); } }
 .hd-kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
 .hd-kpis .tile { padding: 16px 18px; }
 .hd-kpis .tile .value { font-size: 30px; }

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import {
-  AlertTriangle, ArrowDownRight, ArrowUpRight, BadgeCheck, Banknote, CalendarCheck, Car, ChevronRight, Clock, FileWarning, Gauge, Receipt, Route, ShieldAlert, Users,
+  AlertTriangle, ArrowDownRight, ArrowUpRight, BadgeCheck, Banknote, CalendarCheck, Car, ChevronRight, Clock, FileSignature, FileWarning, Gauge, Receipt, ShieldAlert, Users,
 } from 'lucide-react';
 import { useAuth } from '../auth';
 import { useStats } from '../components/Layout';
@@ -13,7 +13,7 @@ import {
 
 const FLEET = [
   { key: 'available', label: 'Available', color: '#1fa971' },
-  { key: 'on_trip', label: 'On trip', color: '#2e86ce' },
+  { key: 'on_trip', label: 'On rent', color: '#2e86ce' },
   { key: 'reserved', label: 'Reserved', color: '#e8a23a' },
   { key: 'maintenance', label: 'Maintenance', color: '#e5484d' },
 ];
@@ -113,9 +113,9 @@ export default function Dashboard() {
               <div className="value">{moneyShort(k.revenueMtd)}</div>
               <div className="foot"><Delta cur={k.revenueMtd} prev={k.revenuePrevMtd} /></div>
             </Tile>
-            <Tile to="/trips?status=live">
-              <div className="top"><span className="label">Live trips</span><span className="ico"><Route size={19} strokeWidth={1.9} /></span></div>
-              <div className="value">{k.liveTrips}</div>
+            <Tile to="/contracts?status=live">
+              <div className="top"><span className="label">Open contracts</span><span className="ico"><FileSignature size={19} strokeWidth={1.9} /></span></div>
+              <div className="value">{k.openContracts}</div>
               <div className="foot">{f.on_trip} vehicles on the road</div>
             </Tile>
             <Tile to="/bookings">
@@ -242,10 +242,10 @@ export default function Dashboard() {
           </div>
 
           <div className="dash-grid">
-            <Card className="span5" title="On the road now" sub={`${stats.liveTripList.length} live trips`}
-              action={<Link to="/trips?status=live" className="btn btn-soft btn-xs">All trips <ChevronRight size={14} /></Link>}>
-              {stats.liveTripList.length === 0 ? <div className="empty" style={{ padding: '26px 8px' }}><div className="ico"><Route size={26} strokeWidth={1.7} /></div><h4>No trips on the road</h4><p>Live trips show up here the moment a customer unlocks a car.</p></div> : null}
-              {stats.liveTripList.map((t) => {
+            <Card className="span5" title="On the road now" sub={`${stats.openContractList.length} open contracts`}
+              action={<Link to="/contracts?status=live" className="btn btn-soft btn-xs">All contracts <ChevronRight size={14} /></Link>}>
+              {stats.openContractList.length === 0 ? <div className="empty" style={{ padding: '26px 8px' }}><div className="ico"><FileSignature size={26} strokeWidth={1.7} /></div><h4>No open contracts</h4><p>Open contracts show up here while a car is with a customer.</p></div> : null}
+              {stats.openContractList.map((t) => {
                 const mins = (Date.now() - toDate(t.started_at).getTime()) / 60000;
                 return (
                   <div className="mini-row" key={t.id}>

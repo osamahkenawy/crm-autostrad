@@ -33,9 +33,14 @@ export const notChecked = () => ({
   other_contracts: [], open_invoices: null, errors: [], notes: [], warnings: [], lookups: [],
 });
 
+/** What a real mailbox gets while no customer system is connected: nothing is looked up and the case says so. The CRM's demo records are never used for it. */
+export const NOT_CONNECTED = 'The customer systems (Orion Fleet and the CNR Portal) are not connected yet, so no customer, contract or invoice details were looked up for this email.';
+export const notConnected = () => ({ ...notChecked(), source: 'none', notes: [NOT_CONNECTED] });
+
 /** The account for an email. Never throws: a problem comes back as status 'unavailable' with the reason. */
 export async function resolveAccount({ email = null, contractNo = null, bypassCache = false } = {}) {
   try {
+    if (accountMode() === 'none') return notConnected();
     if (accountMode() === 'crm') return crmAccount({ email, contractNo });
     const cfg = loadConfig();
     if (!cfg.exists) return failed('api', 'config', 'The customer systems are switched on but the configuration file is missing. See Helpdesk setup, Customer data.');
@@ -113,6 +118,10 @@ export function readAccount(caseId) {
 
 /** What a screen shows for a case. Demo (CRM) mode reads the CRM live, like before; with the customer systems on, it is the stored snapshot. */
 export function accountView(c) {
+  if (accountMode() === 'none') {
+    const stored = readAccount(c.id);
+    return stored && stored.source === 'crm' ? null : stored; // a lookup that was made in the demo records is not shown for a real mailbox
+  }
   if (accountMode() === 'crm') {
     // details that came from the real systems are never replaced by the demo records just because somebody opened the case
     const prev = rowOf(c.id);
@@ -173,6 +182,7 @@ const describeSnapshot = (s) => {
 export async function refreshAccount(caseId, { user = null, bypassCache = true, auto = false } = {}) {
   const c = db.prepare('SELECT * FROM hd_cases WHERE id = ?').get(caseId);
   if (!c) return null;
+  if (accountMode() === 'none') return null; // nothing is connected, so there is nothing to ask again
   const explicit = c.contract_no && !c.contract_inferred ? c.contract_no : null;
   const before = readAccount(caseId);
   const hadCustomer = Boolean(before && before.snapshot && before.snapshot.customer);
@@ -192,7 +202,7 @@ export async function refreshAccount(caseId, { user = null, bypassCache = true, 
 /** For a draft: the account no older than the configured freshness, asking again when it is. Never throws. */
 export async function ensureFreshAccount(c) {
   try {
-    if (accountMode() === 'crm') return accountView(c);
+    if (accountMode() !== 'api') return accountView(c);
     const acct = readAccount(c.id);
     const max = loadConfig().config.freshness_minutes;
     const age = acct && acct.fetched_at ? (Date.now() - Date.parse(acct.fetched_at)) / 60000 : Infinity;

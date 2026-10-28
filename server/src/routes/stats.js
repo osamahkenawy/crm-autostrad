@@ -19,7 +19,7 @@ statsRouter.get('/dashboard', (req, res) => {
 
   const utilisation = fleet.total ? Math.round(((fleet.on_trip + fleet.reserved) / fleet.total) * 100) : 0;
 
-  const liveTrips = one(`SELECT COUNT(*) n FROM trips WHERE status='live'`).n;
+  const openContracts = one(`SELECT COUNT(*) n FROM trips WHERE status='live'`).n;
 
   const bookingsToday = one(
     `SELECT COUNT(*) n FROM bookings WHERE date(start_at) = date('now')`
@@ -86,7 +86,7 @@ statsRouter.get('/dashboard', (req, res) => {
       ORDER BY b.created_at DESC LIMIT 8`
   );
 
-  const liveTripList = all(
+  const openContractList = all(
     `SELECT t.id, t.started_at, t.distance_km, t.duration_min, t.fare,
             c.name customer_name, v.plate, (v.make||' '||v.model) vehicle_name, v.fuel_level
        FROM trips t LEFT JOIN customers c ON c.id=t.customer_id
@@ -113,13 +113,13 @@ statsRouter.get('/dashboard', (req, res) => {
   res.json({
     fleet: { ...fleet, utilisation },
     kpis: {
-      liveTrips, bookingsToday, revenueMtd, revenuePrevMtd,
+      openContracts, bookingsToday, revenueMtd, revenuePrevMtd,
       outstanding: outstanding.v, outstandingCount: outstanding.n,
       overdueReturns, newCustomers, pendingKyc,
       finesOpen: finesOpen.v, finesOpenCount: finesOpen.n,
     },
     revenueTrend, byProductLine, byCategory, branchPerformance,
-    recentBookings, liveTripList, expiring, pipeline,
+    recentBookings, openContractList, expiring, pipeline,
   });
 });
 

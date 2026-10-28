@@ -245,7 +245,7 @@ that needs something unusual (mutual TLS, signed requests, a join of two answers
 
 ## 10. Decisions needed
 
-1. **AI on or off?** Off is safe and works (about 84% right on a test of 68 made-up emails, with the uncertain ones sent to a person). On adds accuracy on messy emails and costs a few dollars a month at 20 emails a day, but customer email text (masked) goes to Anthropic outside the UAE. Owner: legal and security.
+1. **AI on or off?** Off is safe and works (about 87% right on a test of 68 made-up emails, with the uncertain ones sent to a person). On adds accuracy on messy emails and costs a few dollars a month at 20 emails a day, but customer email text (masked) goes to Anthropic outside the UAE. Owner: legal and security.
 2. **Retention:** how long are emails and cases kept? Owner: legal.
 3. **Sign-in:** local accounts now, or Entra ID single sign-on (a dev task)? Owner: security.
 4. **Hosting:** where, and does data residency require the UAE? Owner: infrastructure.

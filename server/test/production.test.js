@@ -12,7 +12,7 @@ import Database from 'better-sqlite3';
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autostrad-prod-'));
 const dbFile = path.join(dir, 'prod.db');
-const base = { ...process.env, ARC_DB_PATH: dbFile, HELPDESK_SCHEDULER: 'off' };
+const base = { ...process.env, ARC_DB_PATH: dbFile, HELPDESK_SCHEDULER: 'off', ARC_SKIP_ENV_FILE: '1' };
 for (const k of ['JWT_SECRET', 'ADMIN_PASSWORD', 'NODE_ENV', 'ANTHROPIC_API_KEY', 'HELPDESK_PROVIDER']) delete base[k];
 const run = (args, env = {}) => spawnSync(process.execPath, args, { cwd: root, env: { ...base, ...env }, encoding: 'utf8', timeout: 20000 });
 

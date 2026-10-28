@@ -4,7 +4,7 @@ import { round2 } from '../lib/format';
 export const VAT = 0.05; // UAE VAT
 
 export const VEHICLE_STATUS = [
-  { value: 'available', label: 'Available' }, { value: 'on_trip', label: 'On trip' },
+  { value: 'available', label: 'Available' }, { value: 'on_trip', label: 'On rent' },
   { value: 'reserved', label: 'Reserved' }, { value: 'maintenance', label: 'Maintenance' },
 ];
 export const CATEGORIES = ['Economy', 'Compact', 'SUV', 'Luxury SUV', 'Electric', 'Van'];

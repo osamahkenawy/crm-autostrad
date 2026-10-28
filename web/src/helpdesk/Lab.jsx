@@ -159,7 +159,7 @@ function ImportCsv({ open, onClose, onSaved }) {
   const [busy, setBusy] = useState(false);
   const [out, setOut] = useState(null);
   const file = useRef(null);
-  useEffect(() => { if (open) { setCsv(''); setOut(null); } }, [open]);
+  useEffect(() => { if (open) { setCsv(''); setOut(null); setMode('split'); } }, [open]); // always start from the recommended split, never from the last import's choice
   const readFile = (ev) => { const f = ev.target.files && ev.target.files[0]; if (f) f.text().then(setCsv); };
   const go = async () => {
     setBusy(true);
@@ -179,7 +179,7 @@ function ImportCsv({ open, onClose, onSaved }) {
           <span className="hint">Emails the model learns from cannot also measure it fairly, so keep some aside.</span></div>
         <div className="hd-actions"><Button icon={FileUp} onClick={() => file.current && file.current.click()}>Choose a CSV file</Button><input ref={file} type="file" accept=".csv,text/csv" hidden onChange={readFile} /></div>
         <textarea className="textarea" rows={8} placeholder="...or paste the CSV here" value={csv} onChange={(e) => setCsv(e.target.value)} dir="auto" />
-        {out ? <div className={`hd-banner ${out.skipped ? 'warn' : 'ok'}`}><div className="grow">{out.added} added, {out.skipped} skipped.{out.errors.length ? <ul className="hd-reasons">{out.errors.map((x, i) => <li key={i}>{x}</li>)}</ul> : null}</div></div> : null}
+        {out ? <div className={`hd-banner ${out.skipped || (out.warnings && out.warnings.length) ? 'warn' : 'ok'}`}><div className="grow">{out.added} added, {out.skipped} skipped.{out.errors.length ? <ul className="hd-reasons">{out.errors.map((x, i) => <li key={i}>{x}</li>)}</ul> : null}{out.warnings && out.warnings.length ? <ul className="hd-reasons">{out.warnings.map((x, i) => <li key={`w${i}`}>{x}</li>)}</ul> : null}</div></div> : null}
       </div>
     </Modal>
   );
@@ -244,7 +244,7 @@ function TestSet({ meta, aiAvailable }) {
 
       {run ? (
         <Card title={`Result: ${ENGINE_NAME[run.engine] || run.engine}`} sub={`Run ${fmtDateTime(run.ran_at)}`} className="hd-mt"
-          action={runs.length > 1 ? <select className="select" style={{ width: 'auto' }} value={run.id} onChange={(e) => api.get(`/helpdesk/lab/runs/${e.target.value}`).then(setRun).catch((er) => toast.error(er.message))} aria-label="Earlier runs">{runs.map((r) => <option key={r.id} value={r.id}>{fmtDateTime(r.ran_at)}, {ENGINE_NAME[r.engine] || r.engine}, {r.correct}/{r.total}</option>)}</select> : null}>
+          action={runs.length > 1 ? <select className="select" style={{ width: 'auto', maxWidth: '100%' }} value={run.id} onChange={(e) => api.get(`/helpdesk/lab/runs/${e.target.value}`).then(setRun).catch((er) => toast.error(er.message))} aria-label="Earlier runs">{runs.map((r) => <option key={r.id} value={r.id}>{fmtDateTime(r.ran_at)}, {ENGINE_NAME[r.engine] || r.engine}, {r.correct}/{r.total}</option>)}</select> : null}>
           <div className="hd-score">
             <div className="box"><div className="n">{run.accuracy}%</div><div className="l">Right ({run.correct} of {run.total})</div></div>
             <div className="box"><div className="n">{run.confident_accuracy === null ? 'n/a' : `${run.confident_accuracy}%`}</div><div className="l">Right among the {run.confident_total} it did not flag for a check</div></div>
@@ -267,7 +267,8 @@ function TestSet({ meta, aiAvailable }) {
           </div>
           <div className="section-title" style={{ marginTop: 18 }}><span>Where it was wrong ({run.failures.length})</span></div>
           {run.failures.length === 0 ? <div className="hd-note">Nothing wrong in this run.</div> : (
-            <table className="hd-table">
+            <div className="table-wrap">
+            <table className="hd-table" style={{ minWidth: 640 }}>
               <thead><tr><th>Email</th><th>Should be</th><th>It said</th><th className="num">Confidence</th><th /></tr></thead>
               <tbody>{run.failures.map((f) => (
                 <tr key={f.id}>
@@ -279,6 +280,7 @@ function TestSet({ meta, aiAvailable }) {
                 </tr>
               ))}</tbody>
             </table>
+            </div>
           )}
         </Card>
       ) : null}

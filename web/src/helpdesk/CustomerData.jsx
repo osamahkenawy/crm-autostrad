@@ -123,11 +123,13 @@ export default function CustomerData({ system }) {
   return (
     <>
       <div className="hd-grid c2" style={{ alignItems: 'start' }}>
-        <Card title="Where the facts come from" sub="Contract, customer and invoice details for every email" action={<Pill tone={live ? 'ok' : 'info'}>{live ? 'Live customer systems' : 'CRM demo records'}</Pill>}>
+        <Card title="Where the facts come from" sub="Contract, customer and invoice details for every email" action={<Pill tone={live ? 'ok' : 'info'}>{live ? 'Live customer systems' : st.mode === 'none' ? 'Not connected yet' : 'CRM demo records'}</Pill>}>
           <p className="hd-note" style={{ margin: '0 0 10px' }}>
             {live
               ? 'Each new email is looked up by the sender address and the contract number in it. The answers are kept with the case, so the screen and the drafted reply use the same facts. If a system is down the case still opens and is completed by itself when it answers again.'
-              : 'The helpdesk reads the CRM\'s own records. That is fine for trying things out. To use the real contracts, customers and invoices, connect the systems below.'}
+              : st.mode === 'none'
+                ? 'Nothing is connected yet, so nothing is looked up for real emails: each case says that customer details are not available, and replies leave out account figures. The CRM\'s demo records are never used for a real mailbox. Connect the systems below when their APIs are ready.'
+                : 'The helpdesk reads the CRM\'s own records. That is fine for trying things out. To use the real contracts, customers and invoices, connect the systems below.'}
           </p>
           <div className="hd-lines">
             <div className="ln"><span>Configuration file</span><b className="mono" style={{ fontSize: 12.5 }}>{st.config.file}</b></div>

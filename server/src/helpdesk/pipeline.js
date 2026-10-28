@@ -89,8 +89,11 @@ function blendEngine(rules, learned) {
   return { sub: top, confidence: Math.round(confidence * 100) / 100, by: 'rules+model', disagree, signals, learned: { top: learned.top.slice(0, 3).map((t) => ({ sub_key: t.sub_key, p: Math.round(t.p * 100) / 100 })), max_sim: Math.round(learned.max_sim * 100) / 100 } };
 }
 
+const MAX_SUBJECT = 1000; // a subject is one line (Outlook allows 255 characters, the mail standard 998); nothing longer is analysed
+
 /** What we know about a message before any case exists. */
 async function analyse({ subject, ownBody, fullBody, fromName, fromEmail, settings, ai = true, learn = true }) {
+  subject = String(subject ?? '').slice(0, MAX_SUBJECT);
   const branches = db.prepare('SELECT name, emirate, address FROM branches').all();
   const ctx = { patterns: settings.contract_patterns, branches };
   const entities = extractEntities({ subject, body: ownBody, fromName, fromEmail }, ctx);
@@ -183,7 +186,7 @@ function newCaseFromAnalysis(msg, a, settings, { parentCaseId = null, account })
   const receivedAt = msg.receivedAt || nowUtc();
   const language = replyLanguage(text);
   const sensitive = sub.sensitive || a.aiSensitive || SENSITIVE_WORDS.test(text) ? 1 : 0;
-  const needsReview = a.confidence < settings.confidence_threshold || a.disagree ? 1 : 0;
+  const needsReview = !(a.confidence >= settings.confidence_threshold) || a.disagree ? 1 : 0; // written so that a confidence that is not a number sends the email to a person
   const matched = (a.rules.sub_key === a.sub ? a.rules.matched : []).slice(0, 8).map(({ term, where, weight }) => ({ term, where, weight }));
 
   const caseNo = nextCaseNo();
@@ -372,6 +375,7 @@ export async function track(c, provider, msg = null) {
  */
 export async function previewAnalysis({ subject = '', body = '', fromName = null, fromEmail = null, ai = true, learn = true } = {}) {
   const settings = getSettings();
+  subject = String(subject ?? '').slice(0, MAX_SUBJECT);
   const ownBody = stripQuoted(body);
   const a = await analyse({ subject, ownBody, fullBody: body, fromName, fromEmail, settings, ai, learn });
   const sub = SUB_BY_KEY[a.sub];
@@ -389,7 +393,7 @@ export async function previewAnalysis({ subject = '', body = '', fromName = null
     sub_key: sub.key, sub_category: sub.name, category: sub.category, impact: sub.impact, department: route.department,
     sensitive: Boolean(sub.sensitive || a.aiSensitive || SENSITIVE_WORDS.test(text)),
     priority, priority_reasons: reasons, confidence: a.confidence, engine: a.by, language: replyLanguage(text),
-    needs_review: a.confidence < settings.confidence_threshold || a.disagree,
+    needs_review: !(a.confidence >= settings.confidence_threshold) || a.disagree,
     rules: { sub_key: a.rules.sub_key, confidence: a.rules.confidence, scores: a.rules.scores, matched: (a.rules.sub_key === a.sub ? a.rules.matched : []).slice(0, 12) },
     ai: { used: a.aiCalled, summary: a.aiSummary, priority: a.aiPriority, disagrees: a.disagree },
     learned: a.learned,

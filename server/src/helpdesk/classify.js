@@ -6,20 +6,34 @@ import { detectLanguage, normalize } from './text.js';
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const ARABIC = /[؀-ۿ]/;
 
-/** hd_keywords rows -> { sub_key: [{ term, weight, re }] } ready for matching. */
+// A repeat inside a repeat, such as (a+)+ or (x*)*, takes time that doubles with every character of a crafted email.
+const NESTED_QUANTIFIER = /\((?:[^()\\]|\\.)*[+*](?:[^()\\]|\\.)*\)[+*{]/;
+
+/** Why an administrator's regular expression would make a bad keyword, or null when it is fine. */
+export function regexProblem(src) {
+  const s = String(src ?? '');
+  if (s.length > 200) return 'The pattern is too long (limit 200 characters).';
+  let re;
+  try { re = new RegExp(s, 'iu'); } catch (e) { return `That is not a valid pattern: ${String(e.message).replace(/^Invalid regular expression: /, '')}`; }
+  if (re.test('')) return 'The pattern matches empty text, so it would count for every email.';
+  if (NESTED_QUANTIFIER.test(s)) return 'A repeat inside a repeat, such as (a+)+, can freeze the server on a crafted email. Write it without nesting.';
+  return null;
+}
+
+/** hd_keywords rows -> { sub_key: [{ term, weight, re }] } ready for matching. A row that cannot be used is left out, never allowed to bend the rest. */
 export function buildDictionary(rows) {
   const dict = {};
   for (const r of rows) {
-    if (r.active === 0 || !r.term) continue;
+    if (r.active === 0 || !r.term || !SUB_BY_KEY[r.sub_key]) continue;
     const term = normalize(r.term);
     if (term.length < 2) continue;
     let re;
     try {
-      if (r.kind === 'regex') re = new RegExp(r.term, 'giu');
+      if (r.kind === 'regex') { if (regexProblem(r.term)) continue; re = new RegExp(r.term, 'giu'); }
       else if (ARABIC.test(term)) re = new RegExp(escapeRe(term), 'g');
       else re = new RegExp(`(?<![a-z0-9])${escapeRe(term)}(?:s|es)?(?![a-z0-9])`, 'g');
     } catch { continue; }
-    (dict[r.sub_key] ||= []).push({ term: r.term, weight: Number(r.weight) || 3, re });
+    (dict[r.sub_key] ||= []).push({ term: r.term, weight: Math.min(5, Math.max(1, Number(r.weight) || 3)), re });
   }
   return dict;
 }
@@ -31,16 +45,20 @@ function matchesFor(entries, norm) {
     e.re.lastIndex = 0;
     let m;
     while ((m = e.re.exec(norm))) {
+      if (m[0].length === 0) { e.re.lastIndex++; continue; } // an empty match (a pattern such as x*) is not evidence of anything
       hits.push({ term: e.term, weight: e.weight, start: m.index, end: m.index + m[0].length });
-      if (m.index === e.re.lastIndex) e.re.lastIndex++;
     }
   }
   hits.sort((a, b) => b.weight - a.weight || (b.end - b.start) - (a.end - a.start));
-  const taken = [];
+  // "does this overlap one already kept" by marking characters, so the cost follows the text and not (hits x kept hits):
+  // a 200,000-character subject made of one keyword has about 28,000 hits and took 3 s the old way
+  const used = new Uint8Array(norm.length + 1);
   const kept = [];
   for (const h of hits) {
-    if (taken.some((t) => h.start < t.end && h.end > t.start)) continue;
-    taken.push(h);
+    let clash = false;
+    for (let i = h.start; i < h.end; i++) if (used[i]) { clash = true; break; }
+    if (clash) continue;
+    used.fill(1, h.start, h.end);
     kept.push(h);
   }
   return kept;

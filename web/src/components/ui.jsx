@@ -26,10 +26,10 @@ export function IconButton({ icon: Icon, label, size = 18, className = '', ...re
 
 /* ------------------------------ status ------------------------------- */
 export const STATUS = {
-  vehicle: { available: ['ok', 'Available'], on_trip: ['info', 'On trip'], reserved: ['warn', 'Reserved'], maintenance: ['danger', 'Maintenance'] },
+  vehicle: { available: ['ok', 'Available'], on_trip: ['info', 'On rent'], reserved: ['warn', 'Reserved'], maintenance: ['danger', 'Maintenance'] },
   booking: { upcoming: ['warn', 'Upcoming'], active: ['info', 'Active'], completed: ['ok', 'Completed'], cancelled: ['neutral', 'Cancelled'] },
   payment: { paid: ['ok', 'Paid'], unpaid: ['warn', 'Unpaid'], refunded: ['neutral', 'Refunded'] },
-  trip: { live: ['info', 'Live now'], completed: ['ok', 'Completed'] },
+  contract: { live: ['info', 'Open'], completed: ['ok', 'Closed'] },
   invoice: { paid: ['ok', 'Paid'], sent: ['info', 'Sent'], overdue: ['danger', 'Overdue'], draft: ['neutral', 'Draft'] },
   maintenance: { scheduled: ['warn', 'Scheduled'], in_progress: ['info', 'In progress'], completed: ['ok', 'Completed'] },
   fine: { recovered: ['ok', 'Recovered'], unrecovered: ['danger', 'Unrecovered'], disputed: ['warn', 'Disputed'] },
@@ -49,7 +49,7 @@ export function Pill({ tone = 'neutral', live, dot = true, children }) {
 export function StatusPill({ kind, value }) {
   if (value === null || value === undefined || value === '') return <span className="faint">—</span>;
   const [tone, label] = (STATUS[kind] || {})[value] || ['neutral', humanize(value)];
-  return <Pill tone={tone} live={kind === 'trip' && value === 'live'}>{label}</Pill>;
+  return <Pill tone={tone} live={kind === 'contract' && value === 'live'}>{label}</Pill>;
 }
 
 /* ------------------------------ identity ----------------------------- */

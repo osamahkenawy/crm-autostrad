@@ -1,12 +1,21 @@
 // Classification, extraction and priority checks on independently written emails (English and Arabic).
 // Run: npm test --prefix server
-import test from 'node:test';
 import assert from 'node:assert/strict';
-import { defaultKeywordRows } from '../src/helpdesk/dictionary.js';
-import { buildDictionary, classify } from '../src/helpdesk/classify.js';
-import { extractEntities } from '../src/helpdesk/extract.js';
-import { scorePriority } from '../src/helpdesk/priority.js';
-import { detectLanguage, normalize, redact, stripQuoted } from '../src/helpdesk/text.js';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import test, { after } from 'node:test';
+
+// extract.js reaches db.js (through the default settings), which opens the database named by ARC_DB_PATH the moment it is imported:
+// point it at a throw-away file first, so running the tests never opens the real data/autostrad.db
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autostrad-nlp-'));
+process.env.ARC_DB_PATH = path.join(dir, 'nlp.db');
+after(() => fs.rmSync(dir, { recursive: true, force: true }));
+const { defaultKeywordRows } = await import('../src/helpdesk/dictionary.js');
+const { buildDictionary, classify, regexProblem } = await import('../src/helpdesk/classify.js');
+const { extractEntities } = await import('../src/helpdesk/extract.js');
+const { scorePriority } = await import('../src/helpdesk/priority.js');
+const { detectLanguage, normalize, redact, stripQuoted } = await import('../src/helpdesk/text.js');
 
 const dict = buildDictionary(defaultKeywordRows());
 
@@ -133,4 +142,65 @@ test('text: language detection, normalisation, quoted-history removal and redact
   assert.equal(stripQuoted('Thanks!\n\nOn Mon, 12 Oct 2026 at 10:00, Helpdesk <helpdesk@autostrad.com> wrote:\n> older'), 'Thanks!');
   const r = redact('card 4242 4242 4242 4242 cvv 123');
   assert.ok(r.text.includes('**** **** **** 4242') && !r.text.includes('4242 4242') && /cvv \*\*\*/.test(r.text));
+});
+
+/* ------------------------------------------------------------------------------------------ hostile and broken input */
+test('quoted history is still cut at the usual markers (also when indented with no-break spaces)', () => {
+  assert.equal(stripQuoted('Thanks a lot\n\n\nOn Mon, 5 Jan 2026 at 10:00, Support <care@autostrad.ae> wrote:\n> old text'), 'Thanks a lot');
+  assert.equal(stripQuoted('Please call me\n \u00a0 On Tue, 6 Jan 2026 at 09:00, X wrote:\nold text'), 'Please call me');
+  assert.equal(stripQuoted('Hi\n-----Original Message-----\nFrom: a\nSent: b'), 'Hi');
+  assert.equal(stripQuoted('Hello\nFrom: a@b.c\nSent: Monday\nTo: d@e.f\nold'), 'Hello');
+  assert.equal(stripQuoted('Line one\n> quoted\nLine two'), 'Line one\nLine two');
+  assert.equal(stripQuoted('Body\n\nSent from my iPhone'), 'Body');
+  assert.equal(stripQuoted('Body text\r\n\r\nDISCLAIMER: this is confidential'), 'Body text');
+  assert.equal(stripQuoted('same text'), stripQuoted('same text'), 'asking again about the same message gives the same answer');
+});
+
+test('hostile input: blank lines, runs of one character and huge subjects are handled in linear time', () => {
+  // each of these took seconds or minutes: the quote markers began with ^\\s* (quadratic over blank lines), the amount pattern restarted at every
+  // digit of "1,1,1,1,...", a run of one symbol made the card pattern quadratic, and the keyword overlap check compared every hit with every kept hit
+  const cases = {
+    '60,000 blank lines': () => stripQuoted('\n'.repeat(60000)),
+    '60,000 lines holding one space': () => stripQuoted(' \n'.repeat(60000)),
+    '200,000 spaces then a word': () => stripQuoted(`${' '.repeat(200000)}hello`),
+    '40,000 digits': () => extractEntities({ subject: 'x', body: '1'.repeat(40000) }),
+    '"1," 20,000 times': () => extractEntities({ subject: 'x', body: '1,'.repeat(20000) }),
+    '40,000 asterisks': () => extractEntities({ subject: 'x', body: '*'.repeat(40000) }),
+    '40,000 bullets': () => extractEntities({ subject: 'x', body: '•'.repeat(40000) }),
+    'a 400,000-character subject of one keyword': () => classify({ subject: 'refund '.repeat(57144), body: 'hello' }, dict),
+  };
+  const slow = [];
+  for (const [name, run] of Object.entries(cases)) { const t = performance.now(); run(); const ms = Math.round(performance.now() - t); if (ms > 500) slow.push(`${name}: ${ms} ms`); }
+  assert.deepEqual(slow, []);
+});
+
+test('squeezing long runs does not hide what the extractor is meant to find', () => {
+  assert.equal(extractEntities({ subject: 'Card', body: 'The charge is on my card **** **** **** 4421, contract AST-100123.' }).card_last4, '4421');
+  assert.equal(extractEntities({ subject: 'Card', body: `The card ${'*'.repeat(400)} 4421 was charged` }).card_last4, '4421', 'a long mask of asterisks still reads as a mask');
+  const e = extractEntities({ subject: 'x', body: `Reference ${'7'.repeat(80)} and then AED 2,500.50 was charged on contract AST-100123` });
+  assert.equal(e.amount, 2500.5);
+  assert.equal(e.contract_no, 'AST-100123');
+  assert.equal(extractEntities({ subject: 'x', body: 'Please refund 12,345,678 AED' }).amounts.length, 0, 'an amount over ten million is not an amount');
+});
+
+test('keywords: rows that cannot be used are ignored and unsafe patterns are refused', () => {
+  const email = { subject: 'Cancel my booking', body: 'My plans changed and I would like to cancel my booking for next week and get a refund of the prepaid amount.' };
+  const clean = classify(email, dict);
+  const bad = [
+    { sub_key: 'bogus_type', language: 'en', term: 'cancel my booking refund prepaid', weight: 5, kind: 'phrase', active: 1 },
+    { sub_key: 'refund_request', language: 'en', term: 'zzweight probe phrase', weight: 'abc', kind: 'phrase', active: 1 },
+    { sub_key: 'refund_request', language: 'en', term: 'x*', weight: 3, kind: 'regex', active: 1 },
+    { sub_key: 'refund_request', language: 'en', term: '(a+)+$', weight: 3, kind: 'regex', active: 1 },
+    { sub_key: 'refund_request', language: 'en', term: '(', weight: 3, kind: 'regex', active: 1 },
+  ];
+  const d = buildDictionary([...defaultKeywordRows(), ...bad]);
+  assert.ok(!d.bogus_type, 'an unknown request type is dropped');
+  assert.ok(!d.refund_request.some((e) => ['x*', '(a+)+$', '('].includes(e.term)), 'an empty-matching, nested-repeat or invalid pattern is dropped');
+  assert.equal(d.refund_request.find((e) => e.term === 'zzweight probe phrase').weight, 3, 'a weight that is not a number falls back to the default');
+  const r = classify(email, d);
+  assert.ok(Number.isFinite(r.confidence));
+  assert.equal(r.sub_key, clean.sub_key);
+
+  for (const ok of ['refund(?:ed)?\\s+twice', 'مبلغ\\s+التأمين', '\\bdeposit\\b']) assert.equal(regexProblem(ok), null, ok);
+  for (const [pattern, why] of [['x*', /empty/], ['a?', /empty/], ['(a+)+$', /repeat inside a repeat/], ['(ab+)+c', /repeat inside a repeat/], ['(x*)*', /empty|repeat inside a repeat/], ['(', /not a valid pattern/], ['a'.repeat(201), /too long/]]) assert.match(regexProblem(pattern) || '', why, pattern);
 });

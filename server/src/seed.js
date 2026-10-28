@@ -52,7 +52,7 @@ const branchIds = db.prepare('SELECT id FROM branches').all().map((r) => r.id);
 const hash = bcrypt.hashSync('autostrad123', 10);
 const team = [
   ['Sami Al Rashid', 'it@autostrad.ae', 'it', 'IT Administrator', '+971 50 100 2030', 1],
-  ['Omar Alaa', 'admin@autostrad.ae', 'admin', 'General Manager', '+971 50 111 2233', 1],
+  ['Mujtaba', 'admin@autostrad.ae', 'admin', 'Admin and customer support', null, 1],
   ['Khalid Al Mansoori', 'khalid@autostrad.ae', 'operations', 'Fleet Director', '+971 50 222 3344', 1],
   ['Rania Haddad', 'rania@autostrad.ae', 'operations', 'Airport Branch Manager', '+971 50 333 4455', 2],
   ['Samir Qureshi', 'samir@autostrad.ae', 'operations', 'Senior Rental Agent', '+971 52 444 5566', 3],
@@ -69,7 +69,7 @@ const team = [
 ];
 // which helpdesk team each person works in (cases are routed to a department, then to its least busy person)
 const DEPARTMENT = {
-  'admin@autostrad.ae': 'Management', 'khalid@autostrad.ae': 'Operations', 'rania@autostrad.ae': 'Branch', 'samir@autostrad.ae': 'Branch',
+  'admin@autostrad.ae': 'Customer Happiness', 'khalid@autostrad.ae': 'Operations', 'rania@autostrad.ae': 'Branch', 'samir@autostrad.ae': 'Branch',
   'leena@autostrad.ae': 'Customer Happiness', 'omar.d@autostrad.ae': 'Branch', 'dana@autostrad.ae': 'Customer Happiness', 'yousef@autostrad.ae': 'Branch',
   'hassan@autostrad.ae': 'Branch', 'mariam@autostrad.ae': 'Accounts', 'noor@autostrad.ae': 'Customer Happiness', 'fatima@autostrad.ae': 'Customer Happiness',
   'ahmed@autostrad.ae': 'Accounts', 'zainab@autostrad.ae': 'Accounts',

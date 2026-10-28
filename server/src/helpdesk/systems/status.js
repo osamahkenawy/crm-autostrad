@@ -6,6 +6,7 @@ import { crmAccount } from '../contracts.js';
 import { sourceHealth } from './client.js';
 import { accountMode, configPath, loadConfig, LOOKUPS, sourceRuntime } from './config.js';
 import { resolveDetailed } from './resolver.js';
+import { notConnected } from './account.js';
 
 /** An address for display: no password or key can ride along in it. */
 function showUrl(u) {
@@ -44,6 +45,7 @@ export function systemsStatus() {
 export async function testLookup({ email = null, contractNo = null, withRaw = false } = {}) {
   const mode = accountMode();
   if (!email && !contractNo) throw new Error('Enter an email address, a contract number, or both.');
+  if (mode === 'none') return { mode, snapshot: notConnected(), steps: [] };
   if (mode === 'crm') return { mode, snapshot: crmAccount({ email, contractNo }), steps: [] };
   const cfg = loadConfig();
   if (!cfg.exists || (!cfg.ok && !cfg.usingLastGood)) throw new Error(cfg.exists ? `The configuration has problems: ${cfg.problems[0]}` : 'The configuration file is missing.');

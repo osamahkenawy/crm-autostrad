@@ -21,9 +21,9 @@ export const vehicles = {
   ],
   stats: [
     { label: 'Available now', icon: CheckCircle2, tone: 'ok', value: (d) => d.fleet.available, foot: (d) => `of ${d.fleet.total} vehicles` },
-    { label: 'On the road', icon: Car, value: (d) => d.fleet.on_trip, foot: (d) => `${d.kpis.liveTrips} live trips` },
+    { label: 'On the road', icon: Car, value: (d) => d.fleet.on_trip, foot: (d) => `${d.kpis.openContracts} open contracts` },
     { label: 'In workshop', icon: Wrench, tone: 'danger', value: (d) => d.fleet.maintenance, foot: (d) => `${d.fleet.reserved} reserved` },
-    { label: 'Utilisation', icon: Gauge, tone: 'navy', value: (d) => `${d.fleet.utilisation}%`, foot: () => 'on trip or reserved' },
+    { label: 'Utilisation', icon: Gauge, tone: 'navy', value: (d) => `${d.fleet.utilisation}%`, foot: () => 'on rent or reserved' },
   ],
   columns: [
     {
