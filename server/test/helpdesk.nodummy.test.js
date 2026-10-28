@@ -15,7 +15,7 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autostrad-nodummy-'));
 const baseEnv = { ...process.env, HELPDESK_SCHEDULER: 'off', ARC_SKIP_ENV_FILE: '1' };
 for (const k of Object.keys(baseEnv)) if (/^(ANTHROPIC_|GRAPH_|HELPDESK_(?!SCHEDULER)|ORION_|CNR_|CUSTOMER_)/.test(k)) delete baseEnv[k];
 let server = null;
-after(() => { if (server) server.kill(); fs.rmSync(dir, { recursive: true, force: true }); });
+const stop = () => (server && server.exitCode === null && server.signalCode === null ? new Promise((resolve) => { server.once('exit', resolve); server.kill(); }) : Promise.resolve());
 
 /* ---------------------------------------------------------------- in this process: a demo database with its CRM records */
 const demoDb = path.join(dir, 'demo.db');
@@ -30,6 +30,12 @@ const { resolveAccount, refreshAccount } = await import('../src/helpdesk/systems
 const { ingestMessage } = await import('../src/helpdesk/pipeline.js');
 const { getCaseDetail } = await import('../src/helpdesk/cases.js');
 const { nowUtc } = await import('../src/helpdesk/routing.js');
+after(async () => {
+  // Windows cannot delete a database while anything still has it open: stop the server and close this process's own connection first
+  await stop();
+  db.close();
+  fs.rmSync(dir, { recursive: true, force: true });
+});
 
 const crm = db.prepare('SELECT c.name, c.email, b.ref AS ref FROM customers c JOIN bookings b ON b.customer_id = c.id WHERE c.email IS NOT NULL ORDER BY b.id LIMIT 1').get();
 const staff = db.prepare("SELECT id FROM users WHERE role = 'admin' LIMIT 1").get();
@@ -123,8 +129,7 @@ test('a new install with a real mailbox starts with no made-up data, and offers 
     assert.equal((await get(token, '/helpdesk/lab/model')).json.samples, 0);
   };
   await check();
-  server.kill();
-  await new Promise((r) => setTimeout(r, 300));
+  await stop();
   await start();
   assert.ok(await login('real@example.com'));
   await check(); // a restart does not put the sample emails back

@@ -89,8 +89,11 @@ before(async () => {
   await start(aiServer, AI_PORT, { ...baseEnv, ARC_DB_PATH: path.join(dir, 'ai.db'), ANTHROPIC_API_KEY: 'test-key', ANTHROPIC_BASE_URL: `http://127.0.0.1:${MOCK_PORT}` });
 });
 
-after(() => {
-  for (const s of servers) s.kill();
+const exited = (s) => (s.exitCode === null && s.signalCode === null ? new Promise((resolve) => { s.once('exit', resolve); s.kill(); }) : Promise.resolve());
+after(async () => {
+  // Windows cannot delete a database while a server still has it open: wait for the servers to exit first
+  await Promise.all(servers.map(exited));
+  mock.closeAllConnections();
   mock.close();
   fs.rmSync(dir, { recursive: true, force: true });
 });

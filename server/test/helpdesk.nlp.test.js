@@ -10,12 +10,13 @@ import test, { after } from 'node:test';
 // point it at a throw-away file first, so running the tests never opens the real data/autostrad.db
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autostrad-nlp-'));
 process.env.ARC_DB_PATH = path.join(dir, 'nlp.db');
-after(() => fs.rmSync(dir, { recursive: true, force: true }));
 const { defaultKeywordRows } = await import('../src/helpdesk/dictionary.js');
 const { buildDictionary, classify, regexProblem } = await import('../src/helpdesk/classify.js');
 const { extractEntities } = await import('../src/helpdesk/extract.js');
 const { scorePriority } = await import('../src/helpdesk/priority.js');
 const { detectLanguage, normalize, redact, stripQuoted } = await import('../src/helpdesk/text.js');
+const { db: nlpDb } = await import('../src/db.js');
+after(() => { nlpDb.close(); fs.rmSync(dir, { recursive: true, force: true }); }); // Windows cannot delete a database that is still open
 
 const dict = buildDictionary(defaultKeywordRows());
 
