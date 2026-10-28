@@ -51,8 +51,9 @@ before(async () => {
   for (const [key, route] of [['vehicle', '/vehicles'], ['invoice', '/invoices'], ['booking', '/bookings'], ['customer', '/customers'], ['lead', '/leads']]) ids[key] = (await call('it', 'GET', `${route}?limit=1`)).json.data[0].id;
 });
 
-after(() => {
-  if (server) server.kill();
+after(async () => {
+  // Windows cannot delete the database while the server still has it open, so wait for the server to exit first.
+  if (server && server.exitCode === null && server.signalCode === null) await new Promise((resolve) => { server.once('exit', resolve); server.kill(); });
   fs.rmSync(dir, { recursive: true, force: true });
 });
 

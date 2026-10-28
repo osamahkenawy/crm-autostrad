@@ -98,7 +98,7 @@ npm run dev:live     # from the project folder: the stand-in systems (port 4010)
 
 Then open **Helpdesk ▸ Setup ▸ Customer data**, run **Try a lookup** with `mariam.99@gmail.com` and `AST-100174`, and send a sample email (Cases ▸ Sample emails) to see
 the live panel on a case. `npm run dev` goes back to the CRM's own records. The stand-in's rules are in `server/scripts/mock-customer-api.mjs`, the matching configuration
-is `server/config/customer-systems.example.json`.
+is `server/config/customer-systems.example.json`, and the settings `dev:live` starts the app with are in `server/config/dev-live.env`.
 
 ## 5. The configuration file
 
@@ -278,7 +278,7 @@ What is stored with a case: the customer's name, address and phone, the contract
 
 ```
 server/config/customer-systems.json            the configuration (off by default)          customer-systems.example.json   a worked example
-server/scripts/mock-customer-api.mjs           the stand-in systems                         npm run dev:live
+server/scripts/mock-customer-api.mjs           the stand-in systems                         npm run dev:live (settings: config/dev-live.env)
 server/src/helpdesk/systems/
   config.js     reads and checks the file               client.js     the HTTP client (sign-in, timeouts, retries, pause, cache)
   mapping.js    the field language                      resolver.js   email -> customer, contract, invoices, and who is writing

@@ -63,8 +63,11 @@ before(async () => {
 });
 
 after(async () => {
-  if (server) server.kill();
+  // Windows cannot delete the database while anything still has it open: wait for the server to exit, and close
+  // this process's own connection (opened by crmFixtures).
+  if (server && server.exitCode === null && server.signalCode === null) await new Promise((resolve) => { server.once('exit', resolve); server.kill(); });
   if (mock) await mock.close();
+  if (fixtures) (await import('../src/db.js')).db.close();
   fs.rmSync(dir, { recursive: true, force: true });
 });
 

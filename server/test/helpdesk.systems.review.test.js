@@ -47,7 +47,7 @@ const DAY = 86_400_000;
 const pad = (n) => String(n).padStart(2, '0');
 const iso = (days) => new Date(Date.now() + days * DAY).toISOString().replace(/\.\d+Z$/, 'Z');
 const dmy = (days) => { const d = new Date(Date.now() + days * DAY); return `${pad(d.getUTCDate())}/${pad(d.getUTCMonth() + 1)}/${d.getUTCFullYear()}`; };
-after(() => { fs.rmSync(dir, { recursive: true, force: true }); });
+after(() => { db.close(); fs.rmSync(dir, { recursive: true, force: true }); });
 
 async function serve(handler) {
   const hits = [];

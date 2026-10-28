@@ -52,11 +52,11 @@ Use this to continue development on a second machine. (To deploy a server, go to
 
 | You need | macOS | Ubuntu / Debian | Windows |
 |---|---|---|---|
-| **Git** | `xcode-select --install` (also gives you the build tools below) | `sudo apt install git` | install WSL2 (Ubuntu) first, then follow the Ubuntu column inside it |
-| **Node 22** | `brew install node@22` or install [nvm](https://github.com/nvm-sh/nvm) | NodeSource (section 4.2) or nvm | inside WSL2 |
-| **Build tools** (the `better-sqlite3` module is compiled on install when no ready-made binary exists) | included with the Xcode tools | `sudo apt install build-essential python3` | inside WSL2 |
+| **Git** | `xcode-select --install` (also gives you the build tools below) | `sudo apt install git` | [Git for Windows](https://git-scm.com/download/win) or `winget install Git.Git` |
+| **Node 22** | `brew install node@22` or install [nvm](https://github.com/nvm-sh/nvm) | NodeSource (section 4.2) or nvm | the Node 22 installer from [nodejs.org](https://nodejs.org/en/download), or [nvm-windows](https://github.com/coreybutler/nvm-windows) (`nvm install 22` then `nvm use 22`: it does not read `.nvmrc`) |
+| **Build tools** (the `better-sqlite3` module is compiled on install when no ready-made binary exists) | included with the Xcode tools | `sudo apt install build-essential python3` | tick *"Automatically install the necessary tools"* in the Node installer (Python and the Visual Studio C++ build tools) |
 
-Node must be **20.12 or newer** (22 recommended): `node -v`. Plain Windows (no WSL) is not supported by the npm scripts.
+Node must be **20.12 or newer** (22 recommended): `node -v`. On Windows every command in this part works as written in PowerShell or Git Bash; WSL is not needed.
 
 ### 2.2 Get the code and run it
 
@@ -100,7 +100,7 @@ git log --oneline -10                 # recent history
 
 Two laptops, one repository: always `git pull` before you start and `git push` when you stop, so they do not drift apart. If `git pull` says there is a conflict, do not panic: `git status` lists the files; open each, keep what is right, then `git add` them and `git commit`.
 
-If the app fails with a message like *"was compiled against a different Node.js version"* or *"not a valid mach-o file"* after switching machines or Node versions: `npm --prefix server rebuild better-sqlite3` (or delete `node_modules` and run `npm run setup` again).
+If the app fails with a message like *"was compiled against a different Node.js version"*, *"not a valid mach-o file"* or *"is not a valid Win32 application"* after switching machines or Node versions: `npm --prefix server rebuild better-sqlite3` (or delete `node_modules` and run `npm run setup` again).
 
 ---
 

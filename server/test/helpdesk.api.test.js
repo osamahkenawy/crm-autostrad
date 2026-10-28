@@ -46,8 +46,9 @@ before(async () => {
   }
 });
 
-after(() => {
-  if (server) server.kill();
+after(async () => {
+  // Windows cannot delete the database while the server still has it open, so wait for the server to exit first.
+  if (server && server.exitCode === null && server.signalCode === null) await new Promise((resolve) => { server.once('exit', resolve); server.kill(); });
   fs.rmSync(dir, { recursive: true, force: true });
 });
 

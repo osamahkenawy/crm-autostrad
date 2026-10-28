@@ -9,7 +9,7 @@
     "seed": "node src/seed.js",
     "test": "node --test \"test/**/*.test.js\"",
     "mock:customer-api": "node scripts/mock-customer-api.mjs",
-    "dev:live": "HELPDESK_ACCOUNT_SOURCE=api CUSTOMER_SYSTEMS_CONFIG=config/customer-systems.example.json ORION_BASE_URL=http://127.0.0.1:4010/v1 CNR_BASE_URL=http://127.0.0.1:4010/v1 ORION_API_KEY=dev-mock-key CNR_API_KEY=dev-mock-key node --watch src/index.js",
+    "dev:live": "node --env-file=config/dev-live.env --watch src/index.js",
     "backup": "node scripts/backup-db.mjs"
   },
   "dependencies": {
